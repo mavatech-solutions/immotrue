@@ -4,11 +4,7 @@ import { ListingOfflineError, UnsupportedPortalError } from './errors.ts'
 import { scrapeKleinanzeigen } from './portals/kleinanzeigen.ts'
 import { scrapeOhneMakler } from './portals/ohneMakler.ts'
 import { scrapeWillhaben } from './portals/willhaben.ts'
-import {
-  scrapeImmoscout24ViaApify,
-  scrapeImmoweltViaApify,
-  scrapeImmonetViaApify,
-} from './portals/apify.ts'
+import { scrapeImmoscout24ViaApify, scrapeImmoweltViaApify } from './portals/apify.ts'
 
 const TIMEOUT_MS = 15_000
 
@@ -25,7 +21,6 @@ const SCRAPERS: Record<string, Scraper> = {
   willhaben: scrapeWillhaben,
   immoscout: scrapeImmoscout24ViaApify,
   immowelt: scrapeImmoweltViaApify,
-  immonet: scrapeImmonetViaApify,
 }
 
 Deno.serve(async (req) => {

@@ -1,6 +1,9 @@
 import type { Portal } from '../types/index.ts'
 
-// Real domains of the 8 supported DACH portals. Used in Mobile + Web + Admin.
+// Real domains of the 7 supported DACH portals. Used in Mobile + Web + Admin.
+// Immonet.de is deliberately absent: AVIV Group discontinued it as a
+// separate brand in early 2026 and merged it fully into Immowelt (same
+// backend, same bot protection, immonet.de links now redirect there).
 const PORTALS: Portal[] = [
   {
     id: 'immoscout',
@@ -14,14 +17,6 @@ const PORTALS: Portal[] = [
     id: 'immowelt',
     name: 'Immowelt',
     domain: 'immowelt.de',
-    flag: '🇩🇪',
-    countries: ['DE'],
-    isPrivateFriendly: false,
-  },
-  {
-    id: 'immonet',
-    name: 'Immonet',
-    domain: 'immonet.de',
     flag: '🇩🇪',
     countries: ['DE'],
     isPrivateFriendly: false,

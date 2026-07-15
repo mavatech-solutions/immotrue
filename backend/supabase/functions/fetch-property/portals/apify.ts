@@ -37,6 +37,8 @@ export async function scrapeImmoscout24ViaApify(url: string, signal: AbortSignal
 
   const price = numberOrNull(item.purchase_price)
   const size = numberOrNull(item.size)
+  const attributes = item.attributes as Record<string, unknown> | undefined
+  const condition = stringOrNull(item.condition)
 
   return {
     title: stringOrEmpty(item.title ?? item.address_line_1),
@@ -48,10 +50,10 @@ export async function scrapeImmoscout24ViaApify(url: string, signal: AbortSignal
     district: stringOrNull(item.city_district),
     city: stringOrEmpty(item.city),
     state: stringOrNull(item.state),
-    zipCode: stringOrNull(item.zip_code),
-    energyClass: stringOrNull(item.energy_class),
+    zipCode: stringOrNull(item.zip_code), // note: comes back as a number from this actor
+    energyClass: stringOrNull(attributes?.obj_energyEfficiencyClass),
     yearBuilt: numberOrNull(item.year_constructed),
-    condition: stringOrNull(item.condition),
+    condition: condition === 'no_information' ? null : condition,
     floor: numberOrNull(item.floor),
     totalFloors: numberOrNull(item.number_of_floors),
     hasParking: null,
@@ -72,19 +74,22 @@ export async function scrapeImmoweltViaApify(url: string, signal: AbortSignal): 
   const price = numberOrNull(item.price)
   const size = numberOrNull(item.livingAreaSqm)
   const broker = item.broker as Record<string, unknown> | undefined
+  const energy = item.energy as Record<string, unknown> | undefined
+  const energyClassMatch =
+    typeof energy?.class === 'string' ? energy.class.match(/_CLASS_([A-Z+]+)$/) : null
 
   return {
     title: stringOrEmpty(item.title),
     price: price ?? 0,
     pricePerSqm: numberOrNull(item.pricePerSqm) ?? (price && size ? Math.round(price / size) : null),
     size,
-    rooms: numberOrNull(item.rooms),
+    rooms: numberOrNull(item.roomsMin ?? item.roomsMax),
     address: null,
     district: stringOrNull(item.district),
     city: stringOrEmpty(item.city),
     state: null,
     zipCode: stringOrNull(item.postalCode),
-    energyClass: null,
+    energyClass: energyClassMatch?.[1] ?? null,
     yearBuilt: numberOrNull(item.constructionYear),
     condition: null,
     floor: null,
@@ -94,43 +99,11 @@ export async function scrapeImmoweltViaApify(url: string, signal: AbortSignal): 
     hasGarden: null,
     heatingType: null,
     daysOnMarket: daysSince(stringOrNull(item.updatedAt)),
-    isPrivateSeller: broker ? broker.sellerType !== 'commercial' : null,
+    // Presence of a broker means an agency/partner is involved — the
+    // sellerType values (e.g. "PARTNER") are never a reliable "private" signal.
+    isPrivateSeller: broker ? false : null,
     description: '',
     portal: 'immowelt',
-    originalUrl: url,
-  }
-}
-
-export async function scrapeImmonetViaApify(url: string, signal: AbortSignal): Promise<PropertyData> {
-  const [item] = await runApifyActor('memo23/immonet-scraper', { startUrls: [{ url }] }, signal)
-
-  const price = numberOrNull(item.price)
-  const size = numberOrNull(item.livingSpace)
-
-  return {
-    title: stringOrEmpty(item.title ?? item.address),
-    price: price ?? 0,
-    pricePerSqm: numberOrNull(item.pricePerSqm) ?? (price && size ? Math.round(price / size) : null),
-    size,
-    rooms: numberOrNull(item.rooms),
-    address: stringOrNull(item.street ?? item.address),
-    district: null,
-    city: stringOrEmpty(item.city),
-    state: null,
-    zipCode: stringOrNull(item.zipCode),
-    energyClass: stringOrNull(item.energyClass),
-    yearBuilt: numberOrNull(item.yearOfConstruction),
-    condition: null,
-    floor: numberOrNull(item.floor),
-    totalFloors: null,
-    hasParking: null,
-    hasBalcony: null,
-    hasGarden: null,
-    heatingType: null,
-    daysOnMarket: null,
-    isPrivateSeller: typeof item.isPrivateOwner === 'boolean' ? item.isPrivateOwner : null,
-    description: '',
-    portal: 'immonet',
     originalUrl: url,
   }
 }
@@ -145,7 +118,9 @@ function numberOrNull(value: unknown): number | null {
 }
 
 function stringOrNull(value: unknown): string | null {
-  return typeof value === 'string' && value.length > 0 ? value : null
+  if (typeof value === 'string' && value.length > 0) return value
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value)
+  return null
 }
 
 function stringOrEmpty(value: unknown): string {

@@ -9,29 +9,33 @@ export interface Portal {
   savingsHint?: string
 }
 
-// Raw data scraped from a portal listing (via Apify), before we analyze it
+// Raw data scraped from a portal listing (via Apify or our own scrapers),
+// before we analyze it. Field completeness varies a lot by portal/scraper,
+// so everything except the essentials is nullable rather than defaulted
+// to a guess (e.g. hasBalcony: false would falsely claim "no balcony" for
+// a portal that simply doesn't expose that field).
 export interface PropertyData {
   title: string
   price: number
-  pricePerSqm: number
-  size: number
-  rooms: number
-  address: string
+  pricePerSqm: number | null
+  size: number | null
+  rooms: number | null
+  address: string | null
   district: string | null
   city: string
-  state: string
-  zipCode: string
+  state: string | null
+  zipCode: string | null
   energyClass: string | null
   yearBuilt: number | null
   condition: string | null
   floor: number | null
   totalFloors: number | null
-  hasParking: boolean
-  hasBalcony: boolean
-  hasGarden: boolean
+  hasParking: boolean | null
+  hasBalcony: boolean | null
+  hasGarden: boolean | null
   heatingType: string | null
-  daysOnMarket: number
-  isPrivateSeller: boolean
+  daysOnMarket: number | null
+  isPrivateSeller: boolean | null
   description: string
   portal: string
   originalUrl: string

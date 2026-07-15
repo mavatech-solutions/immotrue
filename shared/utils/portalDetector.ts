@@ -1,4 +1,4 @@
-import type { Portal } from '../types'
+import type { Portal } from '../types/index.ts'
 
 // Real domains of the 8 supported DACH portals. Used in Mobile + Web + Admin.
 const PORTALS: Portal[] = [

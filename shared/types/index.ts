@@ -4,7 +4,9 @@ export interface Portal {
   name: string
   domain: string
   flag: string
+  countries: string[]
   isPrivateFriendly: boolean
+  savingsHint?: string
 }
 
 // Raw data scraped from a portal listing (via Apify), before we analyze it

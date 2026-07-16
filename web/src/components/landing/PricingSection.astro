@@ -1,0 +1,76 @@
+---
+import Button from '../ui/Button.astro';
+
+const freeFeatures = [
+  '3 Analysen pro Monat',
+  'Preis-Ampel + Basis-Kennzahlen',
+  'Lage-Score',
+  'Alle 6 Portale',
+  'Ergebnis 24h verfügbar',
+]
+
+const premiumFeatures = [
+  'Alle Free Features',
+  'Unbegrenzte Analysen',
+  'KI-Vollbericht mit Verhandlungstipp',
+  'Portfolio & Historie (unbegrenzt)',
+  'Preisänderungs-Alarm',
+  'Finanzierungsrechner',
+  '10-Jahres Prognose',
+  'Risiko-Analyse',
+  'PDF-Export',
+  'Objekte vergleichen',
+  'Wunschalarm',
+]
+---
+
+<section id="preise" class="mx-auto max-w-5xl px-6 py-24 text-center">
+  <h2 class="font-display text-3xl md:text-4xl text-text-primary">Einfache, faire Preise</h2>
+  <p class="mt-3 font-body text-text-secondary">Kostenlos starten. Keine Kreditkarte nötig.</p>
+
+  <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div class="flex flex-col rounded-3xl border border-border-subtle bg-surface p-8 text-left">
+      <span class="font-body text-sm text-text-tertiary">Für Erstkäufer</span>
+      <p class="mt-4 font-display text-4xl text-text-primary">€0</p>
+
+      <ul class="mt-6 flex-1 space-y-3">
+        {freeFeatures.map((feature) => (
+          <li class="flex items-start gap-2 font-body text-sm text-text-secondary">
+            <span class="mt-0.5 text-verdict-cheap">✓</span>
+            {feature}
+          </li>
+        ))}
+      </ul>
+
+      <Button variant="ghost" href="/login" class="mt-8 w-full border border-border-strong">Kostenlos starten</Button>
+    </div>
+
+    <div class="relative flex flex-col rounded-3xl border-2 border-accent-luminous bg-surface-elevated p-8 text-left">
+      <span class="absolute -top-3 left-8 rounded-pill bg-linear-to-r from-accent to-accent-luminous px-4 py-1 font-mono text-xs tracking-widest text-on-accent uppercase">
+        Beliebt
+      </span>
+
+      <p class="font-display text-4xl text-text-primary">€4,99<span class="font-body text-lg text-text-tertiary"> / Monat</span></p>
+      <p class="mt-1 font-body text-sm text-text-tertiary">oder €34,99 / Jahr (2 Monate gratis)</p>
+
+      <ul class="mt-6 flex-1 space-y-3">
+        {premiumFeatures.map((feature) => (
+          <li class="flex items-start gap-2 font-body text-sm text-text-secondary">
+            <span class="mt-0.5 text-accent-luminous">★</span>
+            {feature}
+          </li>
+        ))}
+      </ul>
+
+      <span class="mt-6 inline-flex w-fit items-center gap-1.5 rounded-pill bg-verdict-cheap/15 px-3 py-1 font-body text-xs font-medium text-verdict-cheap">
+        7 Tage kostenlos testen
+      </span>
+
+      <Button variant="primary" href="/login" class="mt-4 w-full">Premium starten</Button>
+    </div>
+  </div>
+
+  <p class="mt-10 font-mono text-xs tracking-widest text-text-tertiary uppercase">
+    DSGVO-konform · SSL-verschlüsselt · Sicheres Payment
+  </p>
+</section>

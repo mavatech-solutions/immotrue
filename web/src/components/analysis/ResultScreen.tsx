@@ -67,9 +67,9 @@ function ResultScreenInner() {
       <MetricsGrid analysis={data.analysis} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <AiReportSection analysis={data.analysis} />
+          <AiReportSection analysis={data.analysis} isPremium={data.isPremium} />
         </div>
-        <FinancingCalculator analysis={data.analysis} />
+        <FinancingCalculator analysis={data.analysis} isPremium={data.isPremium} />
       </div>
     </div>
   );

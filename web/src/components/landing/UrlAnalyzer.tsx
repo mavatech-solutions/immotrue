@@ -48,7 +48,7 @@ export default function UrlAnalyzer() {
           href="#"
           onClick={handleAnalyze}
           aria-disabled={!portal}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-pill bg-linear-to-r from-accent to-accent-luminous px-6 py-4 font-body font-medium text-text-primary transition-opacity duration-200 hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-40"
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-pill bg-linear-to-r from-accent to-accent-luminous px-6 py-4 font-body font-medium text-base transition-opacity duration-200 hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-40"
         >
           Kostenlos analysieren
         </a>

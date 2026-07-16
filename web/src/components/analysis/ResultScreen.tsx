@@ -4,6 +4,8 @@ import { supabase } from '../../lib/supabase';
 import type { SavedAnalysis } from '../../../../shared/types/index';
 import ResultHero from './ResultHero';
 import MetricsGrid from './MetricsGrid';
+import AiReportSection from './AiReportSection';
+import FinancingCalculator from './FinancingCalculator';
 
 const queryClient = new QueryClient();
 
@@ -63,6 +65,12 @@ function ResultScreenInner() {
     <div className="flex flex-col gap-8">
       <ResultHero analysis={data.analysis} isPremium={data.isPremium} />
       <MetricsGrid analysis={data.analysis} />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <AiReportSection analysis={data.analysis} />
+        </div>
+        <FinancingCalculator analysis={data.analysis} />
+      </div>
     </div>
   );
 }

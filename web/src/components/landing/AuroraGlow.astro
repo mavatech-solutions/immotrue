@@ -24,16 +24,16 @@
       #16233d 15%,
       var(--color-base) 100%
     );
-    animation: glow-pulse 10s ease-in-out infinite;
+    animation: glow-drift 24s ease-in-out infinite;
   }
 
-  @keyframes glow-pulse {
+  @keyframes glow-drift {
     0%,
     100% {
-      opacity: 0.85;
+      transform: translate(0, 0);
     }
     50% {
-      opacity: 1;
+      transform: translate(3rem, -2rem);
     }
   }
 </style>

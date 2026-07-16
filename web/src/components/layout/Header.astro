@@ -32,8 +32,6 @@ const mobileLinks = [
       <div class="hidden md:block"><ThemeToggle /></div>
       <div class="hidden md:block"><Button variant="primary" href="/login" class="px-5! py-2.5! text-sm">Kostenlos starten</Button></div>
 
-      <div class="md:hidden"><Button variant="primary" href="/login" class="px-4! py-2! text-sm">Kostenlos starten</Button></div>
-
       <button
         id="mobile-nav-toggle"
         type="button"
@@ -55,7 +53,10 @@ const mobileLinks = [
     {mobileLinks.map((link, i) => (
       <a href={link.href} style={`--i:${i};`}>{link.label}</a>
     ))}
-    <ThemeToggle class="mt-2" style={`--i:${mobileLinks.length};`} />
+    <Button variant="primary" href="/login" class="mt-4 text-base" style={`--i:${mobileLinks.length};`}>
+      Kostenlos starten
+    </Button>
+    <ThemeToggle class="mt-2" style={`--i:${mobileLinks.length + 1};`} />
   </nav>
 </div>
 

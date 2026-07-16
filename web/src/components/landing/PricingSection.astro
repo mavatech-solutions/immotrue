@@ -45,28 +45,32 @@ const premiumFeatures = [
       <Button variant="ghost" href="/login" class="mt-8 w-full border border-border-strong">Kostenlos starten</Button>
     </div>
 
-    <div class="relative flex flex-col rounded-3xl border-2 border-accent-luminous bg-surface-elevated p-8 text-left">
-      <span class="absolute -top-3 left-8 rounded-pill bg-linear-to-r from-accent to-accent-luminous px-4 py-1 font-mono text-xs tracking-widest text-on-accent uppercase">
-        Beliebt
-      </span>
+    <div class="relative">
+      <div class="pricing-glow pointer-events-none absolute -inset-10 -z-10"></div>
 
-      <p class="font-display text-4xl text-text-primary">€4,99<span class="font-body text-lg text-text-tertiary"> / Monat</span></p>
-      <p class="mt-1 font-body text-sm text-text-tertiary">oder €34,99 / Jahr (2 Monate gratis)</p>
+      <div class="relative flex flex-col rounded-3xl border-2 border-accent-luminous bg-surface-elevated p-8 text-left">
+        <span class="absolute -top-3 left-8 rounded-pill bg-linear-to-r from-accent to-accent-luminous px-4 py-1 font-mono text-xs tracking-widest text-on-accent uppercase">
+          Beliebt
+        </span>
 
-      <ul class="mt-6 flex-1 space-y-3">
-        {premiumFeatures.map((feature) => (
-          <li class="flex items-start gap-2 font-body text-sm text-text-secondary">
-            <span class="mt-0.5 text-accent-luminous">★</span>
-            {feature}
-          </li>
-        ))}
-      </ul>
+        <p class="font-display text-4xl text-text-primary">€4,99<span class="font-body text-lg text-text-tertiary"> / Monat</span></p>
+        <p class="mt-1 font-body text-sm text-text-tertiary">oder €34,99 / Jahr (2 Monate gratis)</p>
 
-      <span class="mt-6 inline-flex w-fit items-center gap-1.5 rounded-pill bg-verdict-cheap/15 px-3 py-1 font-body text-xs font-medium text-verdict-cheap">
-        7 Tage kostenlos testen
-      </span>
+        <ul class="mt-6 flex-1 space-y-3">
+          {premiumFeatures.map((feature) => (
+            <li class="flex items-start gap-2 font-body text-sm text-text-secondary">
+              <span class="mt-0.5 text-accent-luminous">★</span>
+              {feature}
+            </li>
+          ))}
+        </ul>
 
-      <Button variant="primary" href="/login" class="mt-4 w-full">Premium starten</Button>
+        <span class="mt-6 inline-flex w-fit items-center gap-1.5 rounded-pill bg-verdict-cheap/15 px-3 py-1 font-body text-xs font-medium text-verdict-cheap">
+          7 Tage kostenlos testen
+        </span>
+
+        <Button variant="primary" href="/login" class="mt-4 w-full">Premium starten</Button>
+      </div>
     </div>
   </div>
 
@@ -74,3 +78,21 @@ const premiumFeatures = [
     DSGVO-konform · SSL-verschlüsselt · Sicheres Payment
   </p>
 </section>
+
+<style>
+  /*
+    Soft glow highlighting the Premium card, reusing the technique
+    proven in the hero's AuroraGlow: fades into the page's own flat
+    background color (not alpha-transparent), so the edge is never a
+    visible boundary regardless of theme, and closest-side sizing
+    means the fade completes exactly at this div's own edges — which
+    is why it's sized bigger than the card itself (-inset-10) rather
+    than exactly matching it, so it's visible as a halo bleeding out
+    around the card instead of being fully hidden behind its opaque
+    background.
+  */
+  .pricing-glow {
+    background: radial-gradient(ellipse closest-side, var(--color-accent-luminous) 0%, var(--color-base) 100%);
+    opacity: 0.3;
+  }
+</style>

@@ -43,18 +43,18 @@ export default function UrlAnalyzer() {
         )}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-3">
+      <div className="mt-4 flex flex-col sm:flex-row gap-3">
         <a
           href="#"
           onClick={handleAnalyze}
           aria-disabled={!portal}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-pill bg-linear-to-r from-accent to-accent-luminous px-6 py-4 font-body font-medium text-on-accent transition-opacity duration-200 hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-40"
+          className="inline-flex w-full sm:flex-1 items-center justify-center gap-2 rounded-pill bg-linear-to-r from-accent to-accent-luminous px-6 py-4 font-body font-medium text-on-accent transition-opacity duration-200 hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-40"
         >
           Kostenlos analysieren
         </a>
         <a
           href="#demo"
-          className="inline-flex items-center justify-center gap-2 rounded-pill border border-accent-luminous px-6 py-4 font-body font-medium text-accent-luminous transition-colors duration-200 hover:bg-accent/10"
+          className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-pill border border-accent-luminous px-6 py-4 font-body font-medium text-accent-luminous transition-colors duration-200 hover:bg-accent/10"
         >
           Demo ansehen
         </a>

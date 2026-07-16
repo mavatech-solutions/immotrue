@@ -12,6 +12,14 @@
   --color-accent-luminous: #4a7fe8;
   --color-accent-deep: #1f3f8a;
 
+  /* Text color for content sitting directly on the accent gradient
+     (primary buttons). Deliberately NOT overridden in light mode —
+     the button's blue background doesn't change between themes, so
+     its own internal contrast shouldn't either. Using --color-base
+     here (like before light mode existed) would flip this to light
+     text in light mode, which is wrong for the same reason. */
+  --color-on-accent: #0a0c0b;
+
   --color-verdict-cheap: #2ecc8f;
   --color-verdict-fair: #2e5bc4;
   --color-verdict-expensive: #f5a623;
@@ -23,6 +31,13 @@
   --color-text-tertiary: #6b7470;
   --color-text-disabled: #3a3e3c;
 
+  /* Used only by the hero's AuroraGlow — the gradient's "peak" tone.
+     Needs its own token (rather than a hardcoded hex) because it has
+     to invert between themes: a dark navy blob reads as a glow on our
+     dark background, but the same navy would read as a dark smudge on
+     a light background. */
+  --color-glow: #16233d;
+
   --font-display: "Playfair Display", serif;
   --font-body: "Inter", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
@@ -30,10 +45,43 @@
   --radius-pill: 999px;
 }
 
+/*
+  Dark is the default (values above, no selector needed). Light mode is
+  an override scoped to [data-theme="light"] on <html> — set by the
+  blocking inline script in Base.astro (before first paint, to avoid a
+  flash of the wrong theme) and toggled by ThemeToggle.astro.
+  Same-shape tokens throughout means every component that already
+  references var(--color-*) is theme-aware for free; nothing in
+  Header/Hero/FeaturesGrid/etc. needs to know which theme is active.
+*/
+:root[data-theme='light'] {
+  --color-base: #f0f1ef;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+
+  --color-border-subtle: rgba(0, 0, 0, 0.08);
+  --color-border-strong: rgba(0, 0, 0, 0.14);
+
+  --color-verdict-cheap: #1f9d6f;
+  --color-verdict-expensive: #c97f0f;
+  --color-verdict-overpriced: #d1293c;
+  --color-verdict-overprice-deep: #a3212f;
+
+  --color-text-primary: #14171a;
+  --color-text-secondary: #52585a;
+  --color-text-tertiary: #82898a;
+  --color-text-disabled: #c4c8c6;
+
+  --color-glow: #dbe6fb;
+}
+
 body {
   background-color: var(--color-base);
   color: var(--color-text-primary);
   font-family: var(--font-body);
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
 }
 
 @keyframes particle-rise {

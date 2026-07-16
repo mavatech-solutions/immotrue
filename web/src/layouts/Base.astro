@@ -24,6 +24,16 @@ const { title, description = 'KI-gestützte Immobilienanalyse für DACH.' } = As
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <script is:inline>
+      // Blocking + inline so this runs before first paint — anything
+      // deferred would flash the default (dark) theme first for anyone
+      // who has light stored, since the stylesheet already applied by
+      // then reads html[data-theme] to pick colors.
+      (function () {
+        var stored = localStorage.getItem('theme');
+        document.documentElement.setAttribute('data-theme', stored === 'light' ? 'light' : 'dark');
+      })();
+    </script>
   </head>
   <body class="bg-base text-text-primary font-body">
     <slot />

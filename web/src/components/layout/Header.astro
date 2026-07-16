@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Button from '../ui/Button.astro';
+import ThemeToggle from '../ui/ThemeToggle.astro';
 import logo from '../../assets/logo_immotrue.png';
 
 const mobileLinks = [
@@ -28,7 +29,10 @@ const mobileLinks = [
 
     <div class="flex items-center gap-5">
       <a href="/login" class="hidden sm:inline font-body text-sm text-text-secondary hover:text-text-primary transition-colors duration-200">Anmelden</a>
+      <ThemeToggle class="hidden md:inline-flex" />
       <Button variant="primary" href="/login" class="px-5! py-2.5! hidden md:inline-flex text-sm">Kostenlos starten</Button>
+
+      <Button variant="primary" href="/login" class="px-4! py-2! text-sm md:hidden">Kostenlos starten</Button>
 
       <button
         id="mobile-nav-toggle"
@@ -51,41 +55,39 @@ const mobileLinks = [
     {mobileLinks.map((link, i) => (
       <a href={link.href} style={`--i:${i};`}>{link.label}</a>
     ))}
-    <Button variant="primary" href="/login" class="mt-4 text-base" style={`--i:${mobileLinks.length};`}>
-      Kostenlos starten
-    </Button>
+    <ThemeToggle class="mt-2" style={`--i:${mobileLinks.length};`} />
   </nav>
 </div>
 
 <style>
   /*
-    Both header states use explicit same-hue rgba(...) values (never the
-    bare `transparent` keyword, which is rgba(0,0,0,0) and would
-    interpolate the color channels toward black — the exact bug the hero
-    glow had) and an explicit blur(...) baseline (never `none`, which
-    can't be smoothly interpolated toward a real blur radius) so every
-    property here transitions cleanly with no flash of an unstyled/
-    default value. Using 0.01px rather than 0px because the build's CSS
-    minifier collapses "blur(0px)" into the invalid "blur()" (no
-    argument), which breaks the interpolation this whole approach
-    depends on.
+    color-mix() with var(--color-base) rather than a hardcoded rgba(...)
+    — makes the header's transparent-to-tinted transition automatically
+    follow whichever theme is active, instead of always mixing toward
+    the dark literal. Border stays constant at --color-border-subtle
+    (already theme-aware and faint enough to not need its own
+    transition) rather than animating between transparent and a color,
+    which is where the hero glow's "interpolates through black" bug
+    came from. An explicit blur(...) baseline (never `none`, which
+    can't be smoothly interpolated toward a real blur radius) — using
+    0.01px rather than 0px because the build's CSS minifier collapses
+    "blur(0px)" into the invalid "blur()" (no argument), which breaks
+    the interpolation this whole approach depends on.
   */
   #site-header {
-    background-color: rgba(10, 12, 11, 0);
+    background-color: color-mix(in srgb, var(--color-base) 0%, transparent);
     backdrop-filter: blur(0.01px);
     -webkit-backdrop-filter: blur(0.01px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0);
+    border-bottom: 1px solid var(--color-border-subtle);
     transition:
       background-color 400ms ease,
-      backdrop-filter 400ms ease,
-      border-color 400ms ease;
+      backdrop-filter 400ms ease;
   }
 
   #site-header.scrolled {
-    background-color: rgba(10, 12, 11, 0.4);
+    background-color: color-mix(in srgb, var(--color-base) 40%, transparent);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    border-bottom-color: rgba(255, 255, 255, 0.06);
   }
 
   /* Hamburger <-> X morph: three lines rotate/fade into a cross. */
@@ -139,7 +141,7 @@ const mobileLinks = [
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(10, 12, 11, 0);
+    background-color: color-mix(in srgb, var(--color-base) 0%, transparent);
     backdrop-filter: blur(0.01px);
     -webkit-backdrop-filter: blur(0.01px);
     opacity: 0;
@@ -151,7 +153,7 @@ const mobileLinks = [
   }
 
   .mobile-nav.open {
-    background-color: rgba(10, 12, 11, 0.92);
+    background-color: color-mix(in srgb, var(--color-base) 92%, transparent);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     opacity: 1;

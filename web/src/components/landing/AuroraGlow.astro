@@ -1,12 +1,11 @@
 {/*
-  Simple, reliable soft glow behind the hero headline: a single
-  radial-gradient div, sized with "closest-side" (fades to transparent
-  exactly at the box edge on both axes, regardless of aspect ratio — no
-  hard edges) and same-hue alpha stops (fading to the same color at 0
-  alpha, not the `transparent` keyword, which is black at 0 alpha and
-  would otherwise muddy the fade). No blur filter or mask layering —
-  those introduced their own edge/tiling bugs without looking
-  meaningfully better than a well-tuned gradient.
+  Soft glow behind the hero headline: a radial-gradient that fades to
+  the page's own flat background color (var(--color-base)) instead of
+  to alpha-transparent. Since the outer edge becomes literally the same
+  color as the surrounding page, there's no boundary to see by
+  construction — no alpha math, no `transparent`-keyword-interpolates-
+  through-black bug, no masking/tiling risk. closest-side sizing still
+  ensures the fade completes exactly at the box edge on both axes.
 */}
 <div class="hero-glow"></div>
 
@@ -21,9 +20,9 @@
     pointer-events: none;
     background: radial-gradient(
       ellipse closest-side,
-      rgba(74, 127, 232, 0.22) 0%,
-      rgba(74, 127, 232, 0.22) 15%,
-      rgba(74, 127, 232, 0) 100%
+      #16233d 0%,
+      #16233d 15%,
+      var(--color-base) 100%
     );
     animation: glow-pulse 10s ease-in-out infinite;
   }

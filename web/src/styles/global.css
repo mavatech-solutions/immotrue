@@ -77,6 +77,19 @@
   --color-on-accent: #ffffff;
 }
 
+/*
+  Disables CSS scroll anchoring: the browser's default behavior of
+  nudging scroll position to compensate when content shifts size near
+  the top of the page. The Playfair Display swap (font-display: swap
+  — the fallback serif has different metrics than the real font,
+  noticeable at the H1's large size) reflows the hero shortly after
+  load, and without this, the browser would "helpfully" scroll a few
+  pixels down to compensate even when starting at the very top.
+*/
+html {
+  overflow-anchor: none;
+}
+
 body {
   background-color: var(--color-base);
   color: var(--color-text-primary);

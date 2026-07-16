@@ -1,51 +1,40 @@
 {/*
-  Aurora-style glow, adapted from the well-known Aceternity UI "Aurora
-  Background" pattern to our blue palette. The edge fade is a mask (pure
-  black/transparent alpha), completely separate from the moving color layer
-  (a blurred, animated repeating-linear-gradient) — masks composite via
-  alpha multiplication only, so there's no RGB-toward-black interpolation
-  bug and no box-edge/banding issues like a plain radial-gradient has.
+  Simple, reliable soft glow behind the hero headline: a single
+  radial-gradient div, sized with "closest-side" (fades to transparent
+  exactly at the box edge on both axes, regardless of aspect ratio — no
+  hard edges) and same-hue alpha stops (fading to the same color at 0
+  alpha, not the `transparent` keyword, which is black at 0 alpha and
+  would otherwise muddy the fade). No blur filter or mask layering —
+  those introduced their own edge/tiling bugs without looking
+  meaningfully better than a well-tuned gradient.
 */}
-<div class="aurora-glow"></div>
+<div class="hero-glow"></div>
 
 <style>
-  .aurora-glow {
+  .hero-glow {
     position: absolute;
     left: 50%;
     top: 22%;
-    width: 150rem;
-    height: 115rem;
+    width: 130rem;
+    height: 100rem;
     translate: -50% -50%;
-    overflow: hidden;
     pointer-events: none;
-    -webkit-mask-image: radial-gradient(ellipse 65rem 48rem at 50% 50%, black 0%, transparent 100%);
-    mask-image: radial-gradient(ellipse 65rem 48rem at 50% 50%, black 0%, transparent 100%);
-  }
-
-  .aurora-glow::after {
-    content: '';
-    position: absolute;
-    inset: -50%;
-    background-image: repeating-linear-gradient(
-      100deg,
-      var(--color-accent-deep) 0%,
-      var(--color-accent) 12%,
-      var(--color-accent-luminous) 24%,
-      var(--color-accent) 36%,
-      var(--color-accent-deep) 48%
+    background: radial-gradient(
+      ellipse closest-side,
+      rgba(74, 127, 232, 0.22) 0%,
+      rgba(74, 127, 232, 0.22) 15%,
+      rgba(74, 127, 232, 0) 100%
     );
-    background-size: 200% 200%;
-    filter: blur(60px);
-    opacity: 0.28;
-    animation: aurora-drift 25s linear infinite;
+    animation: glow-pulse 10s ease-in-out infinite;
   }
 
-  @keyframes aurora-drift {
-    from {
-      background-position: 0% 50%;
+  @keyframes glow-pulse {
+    0%,
+    100% {
+      opacity: 0.85;
     }
-    to {
-      background-position: 200% 50%;
+    50% {
+      opacity: 1;
     }
   }
 </style>

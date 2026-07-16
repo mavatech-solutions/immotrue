@@ -2,6 +2,14 @@
 import { Image } from 'astro:assets';
 import Button from '../ui/Button.astro';
 import logo from '../../assets/logo_immotrue.png';
+
+const mobileLinks = [
+  { href: '#produkt', label: 'Produkt' },
+  { href: '#preise', label: 'Preise' },
+  { href: '#so-funktionierts', label: "So funktioniert's" },
+  { href: '#faq', label: 'FAQ' },
+  { href: '/login', label: 'Anmelden' },
+]
 ---
 
 <header id="site-header" class="fixed inset-x-0 top-0 z-50">
@@ -28,38 +36,39 @@ import logo from '../../assets/logo_immotrue.png';
         aria-label="Menü öffnen"
         aria-expanded="false"
         aria-controls="mobile-nav"
-        class="md:hidden text-text-primary"
+        class="hamburger relative z-10 md:hidden text-text-primary"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="4" y1="7" x2="20" y2="7"></line>
-          <line x1="4" y1="12" x2="20" y2="12"></line>
-          <line x1="4" y1="17" x2="20" y2="17"></line>
-        </svg>
+        <span class="hamburger-line line-1"></span>
+        <span class="hamburger-line line-2"></span>
+        <span class="hamburger-line line-3"></span>
       </button>
     </div>
   </div>
-
-  <nav id="mobile-nav" class="hidden md:hidden flex-col gap-1 border-t border-border-subtle bg-base px-8 py-4 font-body text-sm text-text-secondary">
-    <a href="#produkt" class="py-2 hover:text-text-primary transition-colors duration-200">Produkt</a>
-    <a href="#preise" class="py-2 hover:text-text-primary transition-colors duration-200">Preise</a>
-    <a href="#so-funktionierts" class="py-2 hover:text-text-primary transition-colors duration-200">So funktioniert's</a>
-    <a href="#faq" class="py-2 hover:text-text-primary transition-colors duration-200">FAQ</a>
-    <a href="/login" class="py-2 hover:text-text-primary transition-colors duration-200">Anmelden</a>
-    <Button variant="primary" href="/login" class="mt-2 w-full text-sm">Kostenlos starten</Button>
-  </nav>
 </header>
+
+<div id="mobile-nav" class="mobile-nav md:hidden" aria-hidden="true">
+  <nav class="mobile-nav-links">
+    {mobileLinks.map((link, i) => (
+      <a href={link.href} style={`--i:${i};`}>{link.label}</a>
+    ))}
+    <Button variant="primary" href="/login" class="mt-4 text-base" style={`--i:${mobileLinks.length};`}>
+      Kostenlos starten
+    </Button>
+  </nav>
+</div>
 
 <style>
   /*
-    Both states use explicit same-hue rgba(...) values (never the bare
-    `transparent` keyword, which is rgba(0,0,0,0) and would interpolate
-    the color channels toward black — the exact bug the hero glow had)
-    and an explicit blur(...) baseline (never `none`, which can't be
-    smoothly interpolated toward a real blur radius) so every property
-    here transitions cleanly with no flash of an unstyled/default value.
-    Using 0.01px rather than 0px because the build's CSS minifier
-    collapses "blur(0px)" into the invalid "blur()" (no argument),
-    which breaks the interpolation this whole approach depends on.
+    Both header states use explicit same-hue rgba(...) values (never the
+    bare `transparent` keyword, which is rgba(0,0,0,0) and would
+    interpolate the color channels toward black — the exact bug the hero
+    glow had) and an explicit blur(...) baseline (never `none`, which
+    can't be smoothly interpolated toward a real blur radius) so every
+    property here transitions cleanly with no flash of an unstyled/
+    default value. Using 0.01px rather than 0px because the build's CSS
+    minifier collapses "blur(0px)" into the invalid "blur()" (no
+    argument), which breaks the interpolation this whole approach
+    depends on.
   */
   #site-header {
     background-color: rgba(10, 12, 11, 0);
@@ -78,6 +87,95 @@ import logo from '../../assets/logo_immotrue.png';
     -webkit-backdrop-filter: blur(18px);
     border-bottom-color: rgba(255, 255, 255, 0.06);
   }
+
+  /* Hamburger <-> X morph: three lines rotate/fade into a cross. */
+  .hamburger {
+    width: 24px;
+    height: 16px;
+  }
+
+  .hamburger-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 300ms ease,
+      opacity 200ms ease,
+      top 300ms ease;
+  }
+
+  .hamburger .line-1 {
+    top: 0;
+  }
+  .hamburger .line-2 {
+    top: 7px;
+  }
+  .hamburger .line-3 {
+    top: 14px;
+  }
+
+  .hamburger.open .line-1 {
+    top: 7px;
+    transform: rotate(45deg);
+  }
+  .hamburger.open .line-2 {
+    opacity: 0;
+  }
+  .hamburger.open .line-3 {
+    top: 7px;
+    transform: rotate(-45deg);
+  }
+
+  /* Full-screen overlay menu, fades + blurs in rather than sliding —
+     avoids needing a translate-based reveal to coexist with the
+     per-link stagger animation on the same property. */
+  .mobile-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(10, 12, 11, 0);
+    backdrop-filter: blur(0.01px);
+    -webkit-backdrop-filter: blur(0.01px);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      background-color 300ms ease,
+      backdrop-filter 300ms ease,
+      opacity 300ms ease;
+  }
+
+  .mobile-nav.open {
+    background-color: rgba(10, 12, 11, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .mobile-nav-links > * {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-text-primary);
+    opacity: 0;
+  }
+
+  .mobile-nav.open .mobile-nav-links > * {
+    animation: fade-in-up 500ms ease-out both;
+    animation-delay: calc(var(--i) * 70ms + 100ms);
+  }
 </style>
 
 <script>
@@ -92,18 +190,31 @@ import logo from '../../assets/logo_immotrue.png';
 
   const toggle = document.getElementById('mobile-nav-toggle');
   const mobileNav = document.getElementById('mobile-nav');
+
   if (toggle && mobileNav) {
+    const setOpen = (open: boolean) => {
+      toggle.classList.toggle('open', open);
+      mobileNav.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      mobileNav.setAttribute('aria-hidden', String(!open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+
     toggle.addEventListener('click', () => {
-      const isOpen = mobileNav.classList.toggle('flex');
-      mobileNav.classList.toggle('hidden', !isOpen);
-      toggle.setAttribute('aria-expanded', String(isOpen));
+      setOpen(!mobileNav.classList.contains('open'));
     });
+
     mobileNav.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
-        mobileNav.classList.add('hidden');
-        mobileNav.classList.remove('flex');
-        toggle.setAttribute('aria-expanded', 'false');
-      });
+      link.addEventListener('click', () => setOpen(false));
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    });
+
+    // Clicking the dimmed backdrop itself (not the links) closes it too.
+    mobileNav.addEventListener('click', (e) => {
+      if (e.target === mobileNav) setOpen(false);
     });
   }
 </script>

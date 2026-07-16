@@ -36,18 +36,6 @@ body {
   font-family: var(--font-body);
 }
 
-@keyframes ambient-pulse {
-  0%,
-  100% {
-    opacity: 0.7;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.08);
-  }
-}
-
 @keyframes particle-rise {
   0% {
     transform: translateY(0);

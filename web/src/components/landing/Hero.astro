@@ -1,6 +1,7 @@
 ---
 import UrlAnalyzer from './UrlAnalyzer';
 import ResultPreviewCard from './ResultPreviewCard.astro';
+import AuroraGlow from './AuroraGlow.astro';
 
 // Small rising particles behind the headline — deterministic pseudo-random
 // spread (no client JS needed) so the markup is identical on every render.
@@ -15,10 +16,7 @@ const particles = Array.from({ length: 14 }, (_, i) => ({
 
 <section class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-base px-6 py-32 text-center">
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
-    <div
-      class="absolute left-1/2 top-[28%] h-360 w-460 animate-[ambient-pulse_8s_ease-in-out_infinite]"
-      style="background: radial-gradient(ellipse closest-side, rgba(74,127,232,0.26) 0%, rgba(74,127,232,0.26) 20%, rgba(74,127,232,0) 100%);"
-    ></div>
+    <AuroraGlow />
 
     {particles.map((p) => (
       <span

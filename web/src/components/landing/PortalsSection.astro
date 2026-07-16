@@ -1,37 +1,45 @@
 ---
+import { Image } from 'astro:assets';
 import { getAllPortals } from '../../../../shared/utils/portalDetector';
+import immoscoutLogo from '../../assets/portals/immoscout.svg';
+import immoweltLogo from '../../assets/portals/immowelt.svg';
+import kleinanzeigenLogo from '../../assets/portals/kleinanzeigen.svg';
+import ohnemaklerLogo from '../../assets/portals/ohnemakler.svg';
+import willhabenLogo from '../../assets/portals/willhaben.svg';
+import homegateLogo from '../../assets/portals/homegate.svg';
 
 // Reuses the same portal list the backend scrapers and the hero's
 // live URL detection use — one source of truth, so this grid can't
-// drift out of sync with what's actually supported (e.g. still
-// listing a portal that's been discontinued, or one we've since added).
+// drift out of sync with what's actually supported.
 const portals = getAllPortals();
 
-// No real portal logo assets (and using competitors' trademarked logos
-// without permission would be a real legal risk) — a short monogram in
-// our own brand style reads as "a logo grid" without borrowing anyone
-// else's mark. Two letters from the first two words; for single-word
-// camelCase brand names (ImmoScout24, not "Immo Scout24") prefer the
-// next internal capital letter over just the second character, or
-// "ImmoScout24" and "Immowelt" would both collide on "IM".
-function monogram(name: string): string {
-  const words = name.replace(/[^a-zA-Z0-9\s]/g, ' ').trim().split(/\s+/)
-  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase()
-  const word = words[0]
-  const nextCap = word.slice(1).match(/[A-Z]/)
-  return (word[0] + (nextCap ? nextCap[0] : word[1])).toUpperCase()
+const logos: Record<string, ImageMetadata> = {
+  immoscout: immoscoutLogo,
+  immowelt: immoweltLogo,
+  kleinanzeigen: kleinanzeigenLogo,
+  ohnemakler: ohnemaklerLogo,
+  willhaben: willhabenLogo,
+  homegate: homegateLogo,
 }
 ---
 
 <section class="mx-auto max-w-6xl px-6 py-24 text-center">
   <h2 class="font-display text-3xl md:text-4xl text-text-primary">Alle wichtigen Portale — ein Tool</h2>
 
-  <div class="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-4">
+  <div class="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3">
     {portals.map((portal, i) => (
       <div class="portal-card group relative flex flex-col items-center gap-3 rounded-2xl border border-border-subtle bg-surface px-4 py-8" style={`animation-delay: ${i * 60}ms;`}>
         <span class="absolute right-3 top-3 text-base">{portal.flag}</span>
-        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-accent to-accent-luminous font-display text-lg text-on-accent transition-transform duration-300 group-hover:scale-105">
-          {monogram(portal.name)}
+        {/*
+          Official logos are designed for white backgrounds — several
+          use near-black wordmark text (e.g. Homegate, ImmoScout24)
+          that would nearly disappear on our dark card in dark mode.
+          A fixed white chip (not a theme token) keeps every logo's
+          own colors legible regardless of site theme, same as how
+          app-store/payment badges are usually shown on dark UIs.
+        */}
+        <div class="flex h-14 w-full items-center justify-center rounded-xl bg-white px-3 transition-transform duration-300 group-hover:scale-105">
+          <Image src={logos[portal.id]} alt={portal.name} width={160} height={40} class="h-7 w-auto object-contain" />
         </div>
         <span class="font-body text-sm text-text-secondary">{portal.name}</span>
       </div>

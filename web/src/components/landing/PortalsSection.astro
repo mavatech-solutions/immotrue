@@ -9,7 +9,7 @@ import willhabenLogo from '../../assets/portals/willhaben.svg';
 import homegateLogo from '../../assets/portals/homegate.svg';
 
 // Reuses the same portal list the backend scrapers and the hero's
-// live URL detection use — one source of truth, so this grid can't
+// live URL detection use — one source of truth, so this strip can't
 // drift out of sync with what's actually supported.
 const portals = getAllPortals();
 
@@ -21,87 +21,53 @@ const logos: Record<string, ImageMetadata> = {
   willhaben: willhabenLogo,
   homegate: homegateLogo,
 }
+
+// Tripled (not just duplicated) so the -33.333% loop point is still
+// covered by real content on very wide viewports — with only 6 logos,
+// two copies could run out before the seam scrolls into view on an
+// ultrawide monitor.
+const track = [...portals, ...portals, ...portals]
 ---
 
-<section class="mx-auto max-w-6xl px-6 py-24 text-center">
+<section class="mx-auto max-w-6xl px-6 text-center">
   <h2 class="font-display text-3xl md:text-4xl text-text-primary">Alle wichtigen Portale — ein Tool</h2>
 
-  <div class="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3">
-    {portals.map((portal, i) => (
-      <div class="portal-card group relative flex flex-col items-center gap-3 rounded-2xl border border-border-subtle bg-surface px-4 py-8" style={`animation-delay: ${i * 60}ms;`}>
-        <span class="absolute right-3 top-3 text-base">{portal.flag}</span>
-        {/*
-          Official logos are designed for white backgrounds — several
-          use near-black wordmark text (e.g. Homegate, ImmoScout24)
-          that would nearly disappear on our dark card in dark mode.
-          A fixed white chip (not a theme token) keeps every logo's
-          own colors legible regardless of site theme. Sized to fit
-          the logo snugly with a soft shadow rather than a full-width
-          block, so it reads as an intentional badge rather than a
-          stark white rectangle against the dark card.
-        */}
-        <div class="flex h-12 items-center justify-center rounded-lg bg-white px-4 shadow-sm transition-transform duration-300 group-hover:scale-105">
+  <div class="marquee mt-12">
+    <div class="marquee-track">
+      {track.map((portal) => (
+        <div class="flex h-14 shrink-0 items-center justify-center rounded-lg bg-white px-6 shadow-sm">
           <Image src={logos[portal.id]} alt={portal.name} width={160} height={40} class="h-6 w-auto object-contain" />
         </div>
-        <span class="font-body text-sm text-text-secondary">{portal.name}</span>
-      </div>
-    ))}
+      ))}
+    </div>
   </div>
 
   <p class="mt-8 font-body text-sm text-text-tertiary">Kein Portal dabei? Sag uns Bescheid.</p>
 </section>
 
 <style>
-  /*
-    Same pattern as FeaturesGrid: the reveal is a one-shot @keyframes
-    animation (not a transition), swapped off to a plain "revealed"
-    class once it finishes, so the completed animation doesn't keep
-    "winning" the transform property over the :hover lift — a fill-
-    forwards animation otherwise beats regular rules regardless of
-    specificity.
-  */
-  .portal-card {
-    opacity: 0;
-    transition:
-      transform 200ms ease,
-      border-color 200ms ease;
+  .marquee {
+    overflow: hidden;
+    /* Fades logos in/out at the edges instead of clipping them abruptly. */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   }
 
-  .portal-card.in-view {
-    animation: fade-in-up 500ms ease-out both;
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    gap: 2.5rem;
+    animation: marquee-scroll 36s linear infinite;
   }
 
-  .portal-card.revealed {
-    opacity: 1;
-  }
-
-  .portal-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-accent-luminous);
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* Track is 3 copies of the same content, so -33.333% is exactly
+         one copy's width — the loop point lines up seamlessly. */
+      transform: translateX(-33.3333%);
+    }
   }
 </style>
-
-<script>
-  const cards = document.querySelectorAll('.portal-card');
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          const card = entry.target;
-          card.classList.add('in-view');
-          card.addEventListener(
-            'animationend',
-            () => {
-              card.classList.remove('in-view');
-              card.classList.add('revealed');
-            },
-            { once: true },
-          );
-          observer.unobserve(card);
-        }
-      }
-    },
-    { threshold: 0.2 },
-  );
-  cards.forEach((card) => observer.observe(card));
-</script>

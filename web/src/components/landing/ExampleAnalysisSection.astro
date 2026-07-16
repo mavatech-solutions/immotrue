@@ -1,0 +1,59 @@
+---
+import Badge from '../ui/Badge.astro';
+---
+
+<section class="mx-auto max-w-4xl px-6 py-24 text-center">
+  <h2 class="font-display text-3xl md:text-4xl text-text-primary">Beispiel-Analyse</h2>
+
+  <div class="mt-12 rounded-3xl border border-border-subtle bg-surface p-8 text-left">
+    <div class="flex items-start justify-between">
+      <Badge variant="cheap">Günstig</Badge>
+      <span class="font-body text-sm text-text-tertiary">ImmoScout24</span>
+    </div>
+
+    <p class="mt-6 font-mono text-4xl text-text-primary">€389.000</p>
+    <p class="mt-1 font-mono text-sm text-verdict-cheap">▼ 14% unter Marktwert</p>
+
+    <div class="mt-6 grid grid-cols-2 gap-4 border-t border-border-subtle pt-6 sm:grid-cols-4">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-text-tertiary">Lage-Score</p>
+        <p class="mt-1 font-body text-lg text-text-primary">8,4 / 10</p>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-text-tertiary">Rendite</p>
+        <p class="mt-1 font-body text-lg text-text-primary">4,2 %</p>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-text-tertiary">Größe</p>
+        <p class="mt-1 font-body text-lg text-text-primary">82 m²</p>
+      </div>
+      <div>
+        <p class="font-mono text-xs uppercase tracking-widest text-text-tertiary">Baujahr</p>
+        <p class="mt-1 font-body text-lg text-text-primary">1998</p>
+      </div>
+    </div>
+
+    <div class="relative mt-6 overflow-hidden rounded-2xl border border-border-subtle">
+      <div class="pointer-events-none select-none space-y-3 p-6 opacity-50 blur-sm">
+        <p class="font-display text-lg text-text-primary">KI-Vollbericht</p>
+        <p class="font-body text-sm text-text-secondary">
+          Die Immobilie liegt in einer gefragten Wohngegend mit guter Infrastruktur. Der Kaufpreis
+          liegt deutlich unter dem Marktdurchschnitt, was auf ein solides Verhandlungspotenzial
+          hindeutet. Die Bausubstanz und Ausstattung entsprechen dem für das Baujahr üblichen
+          Standard, größere Sanierungen sind mittelfristig einzuplanen.
+        </p>
+        <p class="font-display text-lg text-text-primary">Verhandlungsstrategie</p>
+        <p class="font-body text-sm text-text-secondary">
+          Basierend auf der Marktanalyse empfehlen wir ein Erstangebot von...
+        </p>
+      </div>
+
+      <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-surface/40">
+        <span class="inline-flex items-center gap-1.5 rounded-pill bg-accent/15 px-3 py-1 text-xs font-medium text-accent-luminous">
+          👑 Premium
+        </span>
+        <p class="font-body text-sm text-text-secondary">Vollständigen KI-Bericht freischalten</p>
+      </div>
+    </div>
+  </div>
+</section>

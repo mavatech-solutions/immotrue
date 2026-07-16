@@ -1,0 +1,31 @@
+---
+import Button from '../ui/Button.astro';
+
+const steps = [
+  { icon: '🔗', title: 'URL einfügen', description: 'Kopiere die URL aus dem Portal' },
+  { icon: '🤖', title: 'KI analysiert', description: 'In 10 Sekunden vollständige Analyse' },
+  { icon: '📊', title: 'Ergebnis erhalten', description: 'Sofort Klarheit über Preis, Lage, Risiken' },
+]
+---
+
+<section id="so-funktionierts" class="mx-auto max-w-6xl px-6 py-24 text-center">
+  <h2 class="font-display text-3xl md:text-4xl text-text-primary">So funktioniert es</h2>
+
+  <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
+    {steps.map((step, i) => (
+      <div class="flex flex-col items-center gap-3">
+        <div class="flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 text-3xl">
+          {step.icon}
+        </div>
+        <span class="font-mono text-xs tracking-widest text-accent-luminous uppercase">Schritt {i + 1}</span>
+        <h3 class="font-display text-xl text-text-primary">{step.title}</h3>
+        <p class="font-body text-sm text-text-secondary">{step.description}</p>
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-12 flex flex-col items-center gap-4">
+    <p class="font-body text-text-secondary">Probier es jetzt aus — kostenlos, ohne Registrierung</p>
+    <Button variant="primary" href="#analysieren">Jetzt analysieren</Button>
+  </div>
+</section>

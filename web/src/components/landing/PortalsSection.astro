@@ -1,0 +1,24 @@
+---
+import { getAllPortals } from '../../../../shared/utils/portalDetector';
+
+// Reuses the same portal list the backend scrapers and the hero's
+// live URL detection use — one source of truth, so this grid can't
+// drift out of sync with what's actually supported (e.g. still
+// listing a portal that's been discontinued, or one we've since added).
+const portals = getAllPortals();
+---
+
+<section class="mx-auto max-w-6xl px-6 py-24 text-center">
+  <h2 class="font-display text-3xl md:text-4xl text-text-primary">Alle wichtigen Portale — ein Tool</h2>
+
+  <div class="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
+    {portals.map((portal) => (
+      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border-subtle bg-surface px-4 py-6">
+        <span class="text-2xl">{portal.flag}</span>
+        <span class="font-body text-sm text-text-secondary">{portal.name}</span>
+      </div>
+    ))}
+  </div>
+
+  <p class="mt-8 font-body text-sm text-text-tertiary">Kein Portal dabei? Sag uns Bescheid.</p>
+</section>

@@ -15,7 +15,10 @@ const particles = Array.from({ length: 14 }, (_, i) => ({
 
 <section class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-base px-6 py-32 text-center">
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
-    <div class="absolute left-1/2 top-[28%] h-[36rem] w-[56rem] rounded-full bg-accent-luminous/25 blur-[120px] animate-[ambient-pulse_8s_ease-in-out_infinite]"></div>
+    <div
+      class="absolute left-1/2 top-[28%] h-200 w-280 animate-[ambient-pulse_8s_ease-in-out_infinite]"
+      style="background: radial-gradient(circle, rgba(74,127,232,0.28) 0%, rgba(74,127,232,0.18) 20%, rgba(74,127,232,0.10) 38%, rgba(74,127,232,0.04) 55%, rgba(74,127,232,0.01) 72%, transparent 85%);"
+    ></div>
 
     {particles.map((p) => (
       <span

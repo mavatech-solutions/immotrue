@@ -6,6 +6,8 @@ import ResultHero from './ResultHero';
 import MetricsGrid from './MetricsGrid';
 import AiReportSection from './AiReportSection';
 import FinancingCalculator from './FinancingCalculator';
+import ProsConsSection from './ProsConsSection';
+import RiskBreakdownSection from './RiskBreakdownSection';
 
 const queryClient = new QueryClient();
 
@@ -71,6 +73,12 @@ function ResultScreenInner() {
         </div>
         <FinancingCalculator analysis={data.analysis} isPremium={data.isPremium} />
       </div>
+      {data.isPremium && (
+        <>
+          <ProsConsSection analysis={data.analysis} />
+          <RiskBreakdownSection analysis={data.analysis} />
+        </>
+      )}
     </div>
   );
 }

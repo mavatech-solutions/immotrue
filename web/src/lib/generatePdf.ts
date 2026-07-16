@@ -119,9 +119,34 @@ export function generateAnalysisPdf(analysis: SavedAnalysis): void {
     paragraph(analysis.ai_summary);
   }
 
+  if (analysis.ai_pros?.length) {
+    heading('Vorteile', 12);
+    for (const pro of analysis.ai_pros) paragraph(`+ ${pro}`);
+  }
+
+  if (analysis.ai_cons?.length) {
+    heading('Nachteile', 12);
+    for (const con of analysis.ai_cons) paragraph(`− ${con}`);
+  }
+
   if (analysis.ai_risks?.length) {
     heading('Risiken', 12);
     for (const risk of analysis.ai_risks) paragraph(`• ${risk}`);
+  }
+
+  if (analysis.risk_breakdown) {
+    heading('Risiko-Analyse', 12);
+    const labels: Record<string, string> = {
+      baujahrRisiko: 'Baujahr-Risiko',
+      energieeffizienz: 'Energieeffizienz',
+      sanierungsbedarf: 'Sanierungsbedarf',
+      lageRisiko: 'Lage-Risiko',
+      rechtliches: 'Rechtliches',
+    };
+    for (const [key, label] of Object.entries(labels)) {
+      row(label, `${analysis.risk_breakdown[key as keyof typeof analysis.risk_breakdown]}/100`);
+    }
+    y += 2;
   }
 
   if (analysis.ai_recommendation) {

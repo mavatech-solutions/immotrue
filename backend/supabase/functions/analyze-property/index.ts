@@ -39,6 +39,24 @@ const ANALYSIS_TOOL = {
       suggestedOfferPrice: { type: 'integer' },
       riskLevel: { type: 'string', enum: ['low', 'medium', 'high'] },
       risks: { type: 'array', items: { type: 'string' } },
+      riskBreakdown: {
+        type: 'object',
+        description:
+          '5 Risiko-Kategorien, je 0-100 (höher = mehr Risiko), basierend auf den tatsächlich verfügbaren Daten und der Objektbeschreibung.',
+        properties: {
+          baujahrRisiko: { type: 'integer', description: 'Baujahr und typische Baujahres-Mängel' },
+          energieeffizienz: { type: 'integer', description: 'Basierend auf Energieklasse, falls bekannt' },
+          sanierungsbedarf: { type: 'integer', description: 'Geschätzter Sanierungsbedarf aus Baujahr, Zustand, Beschreibung' },
+          lageRisiko: { type: 'integer', description: 'Lage-Nachteile, invers zum Lage-Score' },
+          rechtliches: {
+            type: 'integer',
+            description:
+              'Rechtliche Risiken wie Denkmalschutz, Erbbaurecht, Wohnrecht, laufende Rechtsstreitigkeiten — nur falls in der Beschreibung erwähnt, sonst niedriger Standardwert',
+          },
+        },
+        required: ['baujahrRisiko', 'energieeffizienz', 'sanierungsbedarf', 'lageRisiko', 'rechtliches'],
+        additionalProperties: false,
+      },
       hiddenCosts: { type: 'array', items: { type: 'string' } },
       forecast10y: { type: 'string', description: 'Prognosetext für 10 Jahre' },
       forecastValue10y: { type: 'integer' },
@@ -55,6 +73,7 @@ const ANALYSIS_TOOL = {
       'suggestedOfferPrice',
       'riskLevel',
       'risks',
+      'riskBreakdown',
       'hiddenCosts',
       'forecast10y',
       'forecastValue10y',

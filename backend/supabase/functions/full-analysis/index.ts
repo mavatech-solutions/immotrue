@@ -107,6 +107,7 @@ Deno.serve(async (req) => {
         ai_recommendation: (ai.data as { recommendation?: string }).recommendation,
         ai_negotiation_tip: (ai.data as { negotiationTip?: string }).negotiationTip,
         ai_risks: (ai.data as { risks?: unknown }).risks,
+        risk_breakdown: (ai.data as { riskBreakdown?: unknown }).riskBreakdown,
         ai_pros: (ai.data as { pros?: unknown }).pros,
         ai_cons: (ai.data as { cons?: unknown }).cons,
         ai_forecast_10y: (ai.data as { forecast10y?: string }).forecast10y,

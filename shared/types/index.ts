@@ -82,6 +82,20 @@ export type InvestmentVerdict = 'good' | 'medium' | 'bad'
 export type AnalysisStatus = 'interesting' | 'favorite' | 'viewed' | 'rejected'
 export type NotificationFrequency = 'immediate' | 'daily'
 
+// 0-100 per category, higher = more risk. Genuinely assessed by the AI
+// (not derived after the fact from other fields) so all five categories
+// are consistent — including "rechtliches", which has no dedicated
+// stored field of its own to derive from (things like Denkmalschutz,
+// Erbbaurecht etc. only ever show up in the free-text description the
+// AI already reads, never as a structured column).
+export interface RiskBreakdown {
+  baujahrRisiko: number
+  energieeffizienz: number
+  sanierungsbedarf: number
+  lageRisiko: number
+  rechtliches: number
+}
+
 // Output of the Claude analysis Edge Function
 export interface AIAnalysis {
   summary: string
@@ -92,6 +106,7 @@ export interface AIAnalysis {
   suggestedOfferPrice: number
   riskLevel: RiskLevel
   risks: string[]
+  riskBreakdown: RiskBreakdown
   hiddenCosts: string[]
   forecast10y: string
   forecastValue10y: number
@@ -138,6 +153,7 @@ export interface SavedAnalysis {
   ai_recommendation: string | null
   ai_negotiation_tip: string | null
   ai_risks: string[] | null
+  risk_breakdown: RiskBreakdown | null
   ai_pros: string[] | null
   ai_cons: string[] | null
   ai_forecast_10y: string | null

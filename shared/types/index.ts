@@ -49,15 +49,20 @@ export interface MarketData {
   rentalAvgPerSqm: number
 }
 
+// POI/score fields are nullable: the Overpass API backing them is public
+// and known to be intermittently overloaded (verified during development),
+// so a failed lookup degrades to "unknown" rather than failing the whole
+// property analysis — coordinates (from the more reliable Nominatim) still
+// come through.
 export interface LocationData {
-  score: number
-  poisSchools: number
-  poisTransit: number
-  poisShopping: number
-  poisHealth: number
-  poisParks: number
-  poisRestaurants: number
-  isMainStreet: boolean
+  score: number | null
+  poisSchools: number | null
+  poisTransit: number | null
+  poisShopping: number | null
+  poisHealth: number | null
+  poisParks: number | null
+  poisRestaurants: number | null
+  isMainStreet: boolean | null
   coordinates: { lat: number; lng: number }
 }
 

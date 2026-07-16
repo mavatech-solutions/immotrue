@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import AppHeader from '../components/layout/AppHeader.astro';
+import AnalyzeFlow from '../components/analysis/AnalyzeFlow';
+---
+
+<Base title="Analysieren — ImmoTrue">
+  <AppHeader />
+  <main class="mx-auto flex min-h-[calc(100vh-73px)] max-w-6xl items-center justify-center px-6 py-16">
+    <AnalyzeFlow client:load />
+  </main>
+</Base>

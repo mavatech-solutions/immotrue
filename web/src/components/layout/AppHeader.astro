@@ -1,0 +1,15 @@
+---
+import { Image } from 'astro:assets';
+import ThemeToggle from '../ui/ThemeToggle.astro';
+import logo from '../../assets/logo_immotrue.png';
+---
+
+<header class="border-b border-border-subtle">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <a href="/" class="flex items-center gap-2 font-display text-lg text-text-primary">
+      <Image src={logo} alt="ImmoTrue" width={96} height={96} class="h-9 w-9" />
+      ImmoTrue
+    </a>
+    <ThemeToggle />
+  </div>
+</header>

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { detectPortal, isValidUrl } from '../../../../shared/utils/portalDetector';
+import { supabase } from '../../lib/supabase';
 
 export default function UrlAnalyzer() {
   const [url, setUrl] = useState('');
@@ -8,6 +9,22 @@ export default function UrlAnalyzer() {
     if (!url || !isValidUrl(url)) return null;
     return detectPortal(url);
   }, [url]);
+
+  async function handleAnalyze(e: React.MouseEvent) {
+    e.preventDefault();
+    if (!portal) return;
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      window.location.href = `/login?redirect=${encodeURIComponent(`/analyse?url=${url}`)}`;
+      return;
+    }
+
+    window.location.href = `/analyse?url=${encodeURIComponent(url)}`;
+  }
 
   return (
     <div className="w-full max-w-2xl">
@@ -26,13 +43,22 @@ export default function UrlAnalyzer() {
         )}
       </div>
 
-      <a
-        href={portal ? `/analyse?url=${encodeURIComponent(url)}` : '#'}
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-pill bg-gradient-to-r from-accent to-accent-luminous px-6 py-4 font-body font-medium text-text-primary transition-opacity duration-200 hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-40"
-        aria-disabled={!portal}
-      >
-        Kostenlos analysieren
-      </a>
+      <div className="mt-4 flex flex-wrap gap-3">
+        <a
+          href="#"
+          onClick={handleAnalyze}
+          aria-disabled={!portal}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-pill bg-linear-to-r from-accent to-accent-luminous px-6 py-4 font-body font-medium text-text-primary transition-opacity duration-200 hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-40"
+        >
+          Kostenlos analysieren
+        </a>
+        <a
+          href="#demo"
+          className="inline-flex items-center justify-center gap-2 rounded-pill border border-accent-luminous px-6 py-4 font-body font-medium text-accent-luminous transition-colors duration-200 hover:bg-accent/10"
+        >
+          Demo ansehen
+        </a>
+      </div>
     </div>
   );
 }

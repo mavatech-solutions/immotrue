@@ -4,18 +4,25 @@ import Button from '../ui/Button.astro';
 
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-colors duration-300">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-    <a href="/" class="font-display text-2xl bg-gradient-to-r from-accent-luminous to-accent bg-clip-text text-transparent">
+    <a href="/" class="flex items-center gap-2 font-display text-xl text-text-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent-luminous">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
       ImmoTrue
     </a>
 
-    <nav class="hidden md:flex items-center gap-8 font-body text-sm text-text-secondary">
-      <a href="#analysieren" class="hover:text-text-primary transition-colors duration-200">Analysieren</a>
+    <nav class="hidden md:flex items-center gap-8 font-body text-sm text-accent-luminous">
+      <a href="#produkt" class="hover:text-text-primary transition-colors duration-200">Produkt</a>
       <a href="#preise" class="hover:text-text-primary transition-colors duration-200">Preise</a>
-      <a href="#blog" class="hover:text-text-primary transition-colors duration-200">Blog</a>
-      <a href="/login" class="hover:text-text-primary transition-colors duration-200">Login</a>
+      <a href="#so-funktionierts" class="hover:text-text-primary transition-colors duration-200">So funktioniert's</a>
+      <a href="#faq" class="hover:text-text-primary transition-colors duration-200">FAQ</a>
     </nav>
 
-    <Button variant="primary" href="#analysieren" class="!px-5 !py-2.5 text-sm">Kostenlos starten</Button>
+    <div class="flex items-center gap-6">
+      <a href="/login" class="hidden sm:inline font-body text-sm text-text-secondary hover:text-text-primary transition-colors duration-200">Anmelden</a>
+      <Button variant="primary" href="/login" class="px-5! py-2.5! text-sm">Kostenlos starten</Button>
+    </div>
   </div>
 </header>
 

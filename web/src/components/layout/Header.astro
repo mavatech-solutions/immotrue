@@ -20,9 +20,33 @@ import logo from '../../assets/logo_immotrue.png';
 
     <div class="flex items-center gap-5">
       <a href="/login" class="hidden sm:inline font-body text-sm text-text-secondary hover:text-text-primary transition-colors duration-200">Anmelden</a>
-      <Button variant="primary" href="/login" class="px-5! py-2.5! text-sm">Kostenlos starten</Button>
+      <Button variant="primary" href="/login" class="px-5! py-2.5! hidden md:inline-flex text-sm">Kostenlos starten</Button>
+
+      <button
+        id="mobile-nav-toggle"
+        type="button"
+        aria-label="Menü öffnen"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        class="md:hidden text-text-primary"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
+        </svg>
+      </button>
     </div>
   </div>
+
+  <nav id="mobile-nav" class="hidden md:hidden flex-col gap-1 border-t border-border-subtle bg-base px-8 py-4 font-body text-sm text-text-secondary">
+    <a href="#produkt" class="py-2 hover:text-text-primary transition-colors duration-200">Produkt</a>
+    <a href="#preise" class="py-2 hover:text-text-primary transition-colors duration-200">Preise</a>
+    <a href="#so-funktionierts" class="py-2 hover:text-text-primary transition-colors duration-200">So funktioniert's</a>
+    <a href="#faq" class="py-2 hover:text-text-primary transition-colors duration-200">FAQ</a>
+    <a href="/login" class="py-2 hover:text-text-primary transition-colors duration-200">Anmelden</a>
+    <Button variant="primary" href="/login" class="mt-2 w-full text-sm">Kostenlos starten</Button>
+  </nav>
 </header>
 
 <style>
@@ -64,5 +88,22 @@ import logo from '../../assets/logo_immotrue.png';
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  const toggle = document.getElementById('mobile-nav-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  if (toggle && mobileNav) {
+    toggle.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('flex');
+      mobileNav.classList.toggle('hidden', !isOpen);
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+    mobileNav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.add('hidden');
+        mobileNav.classList.remove('flex');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
   }
 </script>

@@ -1,0 +1,63 @@
+---
+const features = [
+  { icon: '🎯', title: 'KI-Preisbewertung', description: 'Ampel-System zeigt sofort: fair oder überteuert' },
+  { icon: '📊', title: 'Vollständiger KI-Bericht', description: 'Detaillierte Analyse mit Verhandlungsstrategie' },
+  { icon: '💰', title: 'Finanzierungsrechner', description: 'Monatliche Rate, Break-Even, alles in Echtzeit' },
+  { icon: '📍', title: 'Lage-Analyse', description: '12 Faktoren: ÖPNV, Schulen, Einkaufen, Ärzte' },
+  { icon: '⚠️', title: 'Risiko-Erkennung', description: 'Versteckte Kosten und Risiken aufdecken' },
+  { icon: '🔮', title: '10-Jahres Prognose', description: 'Wertentwicklung basierend auf echten Marktdaten' },
+  { icon: '📂', title: 'Portfolio & Historie', description: 'Alle Analysen speichern und wiederkommen' },
+  { icon: '🔔', title: 'Preisänderungs-Alarm', description: 'Push wenn dein Objekt günstiger wird' },
+  { icon: '📄', title: 'PDF-Export', description: 'Professioneller Report für Bank und Notar' },
+]
+---
+
+<section class="mx-auto max-w-6xl px-6 py-32">
+  <h2 class="text-center font-display text-3xl md:text-4xl text-text-primary">
+    Alles was du für deine Kaufentscheidung brauchst
+  </h2>
+
+  <div class="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {features.map((feature, i) => (
+      <div
+        class="feature-card rounded-[20px] border border-border-subtle bg-surface p-6 opacity-0 transition-[opacity,transform,border-color] duration-500 ease-out hover:border-accent-luminous"
+        style={`transition-delay: ${i * 100}ms;`}
+      >
+        <span class="text-2xl">{feature.icon}</span>
+        <h3 class="mt-4 font-display text-lg text-text-primary">{feature.title}</h3>
+        <p class="mt-2 font-body text-sm text-text-secondary">{feature.description}</p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .feature-card {
+    transform: translateY(16px);
+  }
+
+  .feature-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .feature-card.in-view:hover {
+    transform: translateY(-4px);
+  }
+</style>
+
+<script>
+  const cards = document.querySelectorAll('.feature-card');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      }
+    },
+    { threshold: 0.2 },
+  );
+  cards.forEach((card) => observer.observe(card));
+</script>

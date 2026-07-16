@@ -1,27 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
 import AppHeader from '../components/layout/AppHeader.astro';
+import ResultScreen from '../components/analysis/ResultScreen';
 ---
 
-<!-- Platzhalter — echter Ergebnis-Screen kommt in Schritt 21/22. Liest
-     ?id= client-seitig (wie /analyse?url=), damit diese Seite statisch
-     bleiben kann — ein dynamischer [id].astro-Pfad würde server-seitiges
-     Rendering brauchen, für das noch kein Adapter konfiguriert ist. -->
+<!-- Query-param page (?id=), not a dynamic /ergebnis/[id] route — the
+     project has no SSR adapter configured yet (static output), and a
+     dynamic path route needs prerender=false, which fails the build
+     without one. RLS on `analyses` (auth.uid() = user_id) makes a
+     direct client-side Supabase select safe, so no backend proxy is
+     needed either. -->
 <Base title="Analyse-Ergebnis — ImmoTrue">
   <AppHeader />
-  <main class="mx-auto flex min-h-[calc(100vh-73px)] max-w-2xl flex-col items-center justify-center gap-4 px-6 text-center">
-    <h1 class="font-display text-3xl text-text-primary">Analyse gespeichert</h1>
-    <p class="max-w-sm font-body text-text-secondary">
-      Der vollständige Ergebnis-Screen wird in einem späteren Schritt gebaut. Analyse-ID: <span id="analysis-id" class="font-mono text-text-primary"></span>
-    </p>
-    <a href="/analyse" class="font-body text-sm text-accent-luminous hover:text-text-primary transition-colors duration-200">
-      Neue Analyse starten
-    </a>
+  <main class="mx-auto max-w-6xl px-6 py-16">
+    <ResultScreen client:load />
   </main>
 </Base>
-
-<script>
-  const id = new URLSearchParams(window.location.search).get('id');
-  const el = document.getElementById('analysis-id');
-  if (el) el.textContent = id ?? '(unbekannt)';
-</script>

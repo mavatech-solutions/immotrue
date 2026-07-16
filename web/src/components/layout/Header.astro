@@ -2,7 +2,7 @@
 import Button from '../ui/Button.astro';
 ---
 
-<header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-colors duration-300">
+<header id="site-header" class="fixed inset-x-0 top-0 z-50">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-8 py-4">
     <a href="/" class="flex items-center gap-2 font-display text-lg text-text-primary">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent-luminous">
@@ -26,14 +26,42 @@ import Button from '../ui/Button.astro';
   </div>
 </header>
 
+<style>
+  /*
+    Both states use explicit same-hue rgba(...) values (never the bare
+    `transparent` keyword, which is rgba(0,0,0,0) and would interpolate
+    the color channels toward black — the exact bug the hero glow had)
+    and an explicit blur(...) baseline (never `none`, which can't be
+    smoothly interpolated toward a real blur radius) so every property
+    here transitions cleanly with no flash of an unstyled/default value.
+    Using 0.01px rather than 0px because the build's CSS minifier
+    collapses "blur(0px)" into the invalid "blur()" (no argument),
+    which breaks the interpolation this whole approach depends on.
+  */
+  #site-header {
+    background-color: rgba(10, 12, 11, 0);
+    backdrop-filter: blur(0.01px);
+    -webkit-backdrop-filter: blur(0.01px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0);
+    transition:
+      background-color 400ms ease,
+      backdrop-filter 400ms ease,
+      border-color 400ms ease;
+  }
+
+  #site-header.scrolled {
+    background-color: rgba(10, 12, 11, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+  }
+</style>
+
 <script>
   const header = document.getElementById('site-header');
   if (header) {
     const onScroll = () => {
-      header.classList.toggle('bg-base/90', window.scrollY > 24);
-      header.classList.toggle('backdrop-blur-md', window.scrollY > 24);
-      header.classList.toggle('border-b', window.scrollY > 24);
-      header.classList.toggle('border-border-subtle', window.scrollY > 24);
+      header.classList.toggle('scrolled', window.scrollY > 24);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });

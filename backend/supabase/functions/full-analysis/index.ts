@@ -47,7 +47,10 @@ Deno.serve(async (req) => {
     if ('error' in location) return jsonResponse(location.body, location.status)
     if ('error' in market) return jsonResponse(market.body, market.status)
 
-    const priceVerdict = computePriceVerdict(property.data.pricePerSqm, market.data.avgPricePerSqm)
+    const { verdict: priceVerdict, deviation: priceDeviation } = computePriceVerdict(
+      property.data.pricePerSqm,
+      market.data.avgPricePerSqm,
+    )
     const country = property.data.portal === 'willhaben' ? 'AT' : 'DE'
     const costs = calculatePurchaseCosts(
       property.data.price,
@@ -97,6 +100,7 @@ Deno.serve(async (req) => {
         original_price: property.data.price,
         current_price: property.data.price,
         price_verdict: priceVerdict,
+        price_deviation: priceDeviation,
         suggested_offer_price: (ai.data as { suggestedOfferPrice?: number }).suggestedOfferPrice,
         ai_summary: (ai.data as { summary?: string }).summary,
         ai_full_report: (ai.data as { fullReport?: string }).fullReport,
@@ -169,14 +173,17 @@ async function checkAndUpdateRateLimit(userId: string): Promise<Response | null>
   return null
 }
 
-function computePriceVerdict(pricePerSqm: number | null, avgPricePerSqm: number): PriceVerdict {
-  if (!pricePerSqm || !avgPricePerSqm) return 'fair'
+function computePriceVerdict(
+  pricePerSqm: number | null,
+  avgPricePerSqm: number,
+): { verdict: PriceVerdict; deviation: number | null } {
+  if (!pricePerSqm || !avgPricePerSqm) return { verdict: 'fair', deviation: null }
 
-  const deviation = ((pricePerSqm - avgPricePerSqm) / avgPricePerSqm) * 100
-  if (deviation <= -10) return 'cheap'
-  if (deviation <= 5) return 'fair'
-  if (deviation <= 20) return 'expensive'
-  return 'overpriced'
+  const deviation = Math.round(((pricePerSqm - avgPricePerSqm) / avgPricePerSqm) * 1000) / 10
+  if (deviation <= -10) return { verdict: 'cheap', deviation }
+  if (deviation <= 5) return { verdict: 'fair', deviation }
+  if (deviation <= 20) return { verdict: 'expensive', deviation }
+  return { verdict: 'overpriced', deviation }
 }
 
 type FunctionResult<T> = { data: T } | { error: true; status: number; body: unknown }

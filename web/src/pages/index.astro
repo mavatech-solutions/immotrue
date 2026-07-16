@@ -2,14 +2,16 @@
 import Landing from '../layouts/Landing.astro';
 import Hero from '../components/landing/Hero.astro';
 import FeaturesGrid from '../components/landing/FeaturesGrid.astro';
-import PortalsSection from '../components/landing/PortalsSection.astro';
+import ResultPreviewCard from '../components/landing/ResultPreviewCard.astro';
 import HowItWorks from '../components/landing/HowItWorks.astro';
 import ExampleAnalysisSection from '../components/landing/ExampleAnalysisSection.astro';
 ---
 
 <Landing title="ImmoTrue — Wahrheit über jedes Inserat" description="KI-gestützte Immobilienanalyse für DACH. Alle 6 Portale. Ein Klick zur Wahrheit.">
   <Hero />
-  <PortalsSection />
+  <section class="mx-auto flex max-w-6xl justify-center px-6 py-24">
+    <ResultPreviewCard />
+  </section>
   <FeaturesGrid />
   <HowItWorks />
   <ExampleAnalysisSection />

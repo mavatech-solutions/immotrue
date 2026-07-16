@@ -1,6 +1,6 @@
 ---
 import UrlAnalyzer from './UrlAnalyzer';
-import ResultPreviewCard from './ResultPreviewCard.astro';
+import PortalsSection from './PortalsSection.astro';
 import AuroraGlow from './AuroraGlow.astro';
 
 // Small rising particles behind the headline — deterministic pseudo-random
@@ -47,8 +47,8 @@ const particles = Array.from({ length: 14 }, (_, i) => ({
       ★★★★★ 4,8 · 10.000+ Nutzer in Deutschland, Österreich, der Schweiz
     </p>
 
-    <div class="mt-8 flex justify-center opacity-0 in-[.fonts-ready]:animate-[fade-in-up_0.8s_ease-out_0.5s_both]">
-      <ResultPreviewCard />
+    <div class="mt-8 w-full opacity-0 in-[.fonts-ready]:animate-[fade-in-up_0.8s_ease-out_0.5s_both]">
+      <PortalsSection />
     </div>
   </div>
 </section>

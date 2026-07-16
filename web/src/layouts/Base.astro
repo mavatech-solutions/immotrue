@@ -29,3 +29,19 @@ const { title, description = 'KI-gestützte Immobilienanalyse für DACH.' } = As
     <slot />
   </body>
 </html>
+
+<script>
+  // Entrance animations wait for this — Playfair Display (fallback ->
+  // real font swap) shifts the H1's layout noticeably given how
+  // different its letter widths are from any fallback serif. Without
+  // gating, that swap tends to land right around when the fade-in-up
+  // animation finishes, looking like the animation itself "jumps".
+  const markFontsReady = () => document.documentElement.classList.add('fonts-ready');
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(markFontsReady);
+  } else {
+    markFontsReady();
+  }
+  // Safety net in case font loading stalls — don't leave content invisible forever.
+  setTimeout(markFontsReady, 500);
+</script>

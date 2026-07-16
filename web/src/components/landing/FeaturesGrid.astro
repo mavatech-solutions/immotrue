@@ -20,8 +20,8 @@ const features = [
   <div class="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
     {features.map((feature, i) => (
       <div
-        class="feature-card rounded-[20px] border border-border-subtle bg-surface p-6 opacity-0 transition-[opacity,transform,border-color] duration-500 ease-out hover:border-accent-luminous"
-        style={`transition-delay: ${i * 100}ms;`}
+        class="feature-card rounded-[20px] border border-border-subtle bg-surface p-6 hover:border-accent-luminous"
+        style={`animation-delay: ${i * 100}ms;`}
       >
         <span class="text-2xl">{feature.icon}</span>
         <h3 class="mt-4 font-display text-lg text-text-primary">{feature.title}</h3>
@@ -32,16 +32,39 @@ const features = [
 </section>
 
 <style>
+  /*
+    The scroll-in reveal (opacity/translateY) runs as a one-shot
+    @keyframes animation with a per-card stagger delay, NOT a
+    `transition`. Hover's lift and border-color get their own separate,
+    delay-free `transition` — keeping these on two different
+    mechanisms means the reveal's stagger delay can never bleed into
+    the hover response (which it would if both were driven by the same
+    `transition-delay`, since transform is used by both).
+  */
   .feature-card {
-    transform: translateY(16px);
+    opacity: 0;
+    transition:
+      transform 200ms ease,
+      border-color 200ms ease;
   }
 
   .feature-card.in-view {
-    opacity: 1;
-    transform: translateY(0);
+    animation: fade-in-up 500ms ease-out both;
   }
 
-  .feature-card.in-view:hover {
+  /*
+    Once the reveal animation finishes, swap to this instead of leaving
+    `.in-view` on: a running (or fill-forwards-completed) CSS animation
+    keeps "winning" the `transform` property over regular rules like
+    `:hover`, since animations take cascade priority regardless of
+    specificity — so the hover lift would silently stop working once
+    the reveal animation completed if `.in-view` just stayed applied.
+  */
+  .feature-card.revealed {
+    opacity: 1;
+  }
+
+  .feature-card:hover {
     transform: translateY(-4px);
   }
 </style>
@@ -52,8 +75,17 @@ const features = [
     (entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          observer.unobserve(entry.target);
+          const card = entry.target;
+          card.classList.add('in-view');
+          card.addEventListener(
+            'animationend',
+            () => {
+              card.classList.remove('in-view');
+              card.classList.add('revealed');
+            },
+            { once: true },
+          );
+          observer.unobserve(card);
         }
       }
     },

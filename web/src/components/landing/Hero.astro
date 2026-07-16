@@ -27,27 +27,27 @@ const particles = Array.from({ length: 14 }, (_, i) => ({
   </div>
 
   <div class="relative z-10 flex flex-col items-center gap-6">
-    <p class="font-mono text-xs tracking-widest text-accent-luminous uppercase animate-[fade-in-up_0.8s_ease-out]">
+    <p class="font-mono text-xs tracking-widest text-accent-luminous uppercase opacity-0 in-[.fonts-ready]:animate-[fade-in-up_0.8s_ease-out_both]">
       KI-Analyse für den DACH-Immobilienmarkt
     </p>
 
-    <h1 class="max-w-3xl font-display text-5xl md:text-7xl leading-[1.1] text-text-primary animate-[fade-in-up_0.8s_ease-out_0.1s_both]">
+    <h1 class="max-w-3xl font-display text-5xl md:text-7xl leading-[1.1] text-text-primary opacity-0 in-[.fonts-ready]:animate-[fade-in-up_0.8s_ease-out_0.1s_both]">
       Jedes Inserat. <em class="italic text-accent-luminous">Analysiert in Sekunden.</em>
     </h1>
 
-    <p class="max-w-xl font-body text-lg md:text-xl text-text-secondary animate-[fade-in-up_0.8s_ease-out_0.2s_both]">
+    <p class="max-w-xl font-body text-lg md:text-xl text-text-secondary opacity-0 in-[.fonts-ready]:animate-[fade-in-up_0.8s_ease-out_0.2s_both]">
       Preis, Lage und Rendite objektiv bewertet — bevor du eine €500.000-Entscheidung triffst.
     </p>
 
-    <div class="mt-2 w-full flex justify-center animate-[fade-in-up_0.8s_ease-out_0.3s_both]">
+    <div class="mt-2 w-full flex justify-center opacity-0 in-[.fonts-ready]:animate-[fade-in-up_0.8s_ease-out_0.3s_both]">
       <UrlAnalyzer client:load />
     </div>
 
-    <p class="font-mono text-sm text-text-tertiary animate-[fade-in-up_0.8s_ease-out_0.4s_both]">
+    <p class="font-mono text-sm text-text-tertiary opacity-0 in-[.fonts-ready]:animate-[fade-in-up_0.8s_ease-out_0.4s_both]">
       ★★★★★ 4,8 · 10.000+ Nutzer in Deutschland, Österreich, der Schweiz
     </p>
 
-    <div class="mt-8 flex justify-center animate-[fade-in-up_0.8s_ease-out_0.5s_both]">
+    <div class="mt-8 flex justify-center opacity-0 in-[.fonts-ready]:animate-[fade-in-up_0.8s_ease-out_0.5s_both]">
       <ResultPreviewCard />
     </div>
   </div>

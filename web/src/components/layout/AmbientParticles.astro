@@ -1,0 +1,23 @@
+---
+// Page-wide, subtle ambient particles — distinct from the hero's own
+// (larger, more prominent) particle effect. Fixed positioning so it
+// stays put behind content while scrolling, sparse/dim enough not to
+// compete with text in content-heavy sections (Features, Pricing,
+// FAQ), just enough to keep the flat dark background from feeling
+// empty. Reuses the same particle-rise keyframe the hero uses.
+const particles = Array.from({ length: 10 }, (_, i) => ({
+  left: (i * 41) % 100,
+  size: 2,
+  duration: 18 + (i % 5) * 3,
+  delay: -(i * 2.7).toFixed(1),
+}));
+---
+
+<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+  {particles.map((p) => (
+    <span
+      class="absolute rounded-full bg-accent-luminous/30"
+      style={`left:${p.left}%; bottom:-10px; width:${p.size}px; height:${p.size}px; animation: particle-rise ${p.duration}s linear infinite; animation-delay: ${p.delay}s;`}
+    ></span>
+  ))}
+</div>

@@ -35,11 +35,13 @@ const logos: Record<string, ImageMetadata> = {
           use near-black wordmark text (e.g. Homegate, ImmoScout24)
           that would nearly disappear on our dark card in dark mode.
           A fixed white chip (not a theme token) keeps every logo's
-          own colors legible regardless of site theme, same as how
-          app-store/payment badges are usually shown on dark UIs.
+          own colors legible regardless of site theme. Sized to fit
+          the logo snugly with a soft shadow rather than a full-width
+          block, so it reads as an intentional badge rather than a
+          stark white rectangle against the dark card.
         */}
-        <div class="flex h-14 w-full items-center justify-center rounded-xl bg-white px-3 transition-transform duration-300 group-hover:scale-105">
-          <Image src={logos[portal.id]} alt={portal.name} width={160} height={40} class="h-7 w-auto object-contain" />
+        <div class="flex h-12 items-center justify-center rounded-lg bg-white px-4 shadow-sm transition-transform duration-300 group-hover:scale-105">
+          <Image src={logos[portal.id]} alt={portal.name} width={160} height={40} class="h-6 w-auto object-contain" />
         </div>
         <span class="font-body text-sm text-text-secondary">{portal.name}</span>
       </div>

@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+import Input from '../components/ui/Input.astro';
+---
+
+<Base title="ImmoTrue — Design System">
+  <main class="mx-auto max-w-2xl px-6 py-24 space-y-8">
+    <h1 class="font-display text-5xl">ImmoTrue</h1>
+    <p class="font-mono text-text-secondary">Design-System-Vorschau — Schritt 15</p>
+
+    <Card>
+      <p class="mb-4 text-text-secondary">Basis-Komponenten:</p>
+      <div class="flex flex-wrap gap-3 mb-4">
+        <Button variant="primary">Kostenlos analysieren</Button>
+        <Button variant="secondary">Mehr erfahren</Button>
+        <Button variant="ghost">Login</Button>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-4">
+        <Badge variant="cheap">Günstig</Badge>
+        <Badge variant="fair">Fair</Badge>
+        <Badge variant="expensive">Teuer</Badge>
+        <Badge variant="overpriced">Überteuert</Badge>
+      </div>
+      <Input placeholder="ImmoScout, Immowelt, ohne-makler.net URL…" />
+    </Card>
+  </main>
+</Base>

@@ -1,0 +1,22 @@
+---
+interface Props {
+  variant?: 'cheap' | 'fair' | 'expensive' | 'overpriced' | 'neutral';
+  class?: string;
+}
+
+const { variant = 'neutral', class: className = '' } = Astro.props;
+
+const variants = {
+  cheap: 'bg-verdict-cheap/15 text-verdict-cheap',
+  fair: 'bg-verdict-fair/15 text-verdict-fair',
+  expensive: 'bg-verdict-expensive/15 text-verdict-expensive',
+  overpriced: 'bg-verdict-overpriced/15 text-verdict-overpriced',
+  neutral: 'bg-border-subtle text-text-secondary',
+};
+
+const classes = `inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-xs font-medium font-body ${variants[variant]} ${className}`;
+---
+
+<span class={classes}>
+  <slot />
+</span>

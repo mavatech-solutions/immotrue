@@ -1,0 +1,16 @@
+---
+interface Props {
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
+  placeholder?: string;
+  name?: string;
+  id?: string;
+  value?: string;
+  class?: string;
+}
+
+const { type = 'text', placeholder, name, id, value, class: className = '' } = Astro.props;
+
+const classes = `w-full rounded-xl border border-border-subtle bg-surface-elevated px-4 py-3 text-text-primary placeholder:text-text-tertiary font-body outline-none transition-colors duration-200 focus:border-accent-luminous ${className}`;
+---
+
+<input type={type} placeholder={placeholder} name={name} id={id} value={value} class={classes} />

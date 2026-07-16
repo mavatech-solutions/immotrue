@@ -1,0 +1,14 @@
+---
+interface Props {
+  elevated?: boolean;
+  class?: string;
+}
+
+const { elevated = false, class: className = '' } = Astro.props;
+
+const classes = `rounded-2xl border border-border-subtle p-6 ${elevated ? 'bg-surface-elevated' : 'bg-surface'} ${className}`;
+---
+
+<div class={classes}>
+  <slot />
+</div>

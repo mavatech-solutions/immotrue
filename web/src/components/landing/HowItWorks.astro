@@ -2,30 +2,72 @@
 import Button from '../ui/Button.astro';
 
 const steps = [
-  { icon: '🔗', title: 'URL einfügen', description: 'Kopiere die URL aus dem Portal' },
-  { icon: '🤖', title: 'KI analysiert', description: 'In 10 Sekunden vollständige Analyse' },
-  { icon: '📊', title: 'Ergebnis erhalten', description: 'Sofort Klarheit über Preis, Lage, Risiken' },
+  {
+    title: 'URL einfügen',
+    description: 'Kopiere die URL aus dem Portal',
+    icon: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71',
+  },
+  {
+    title: 'KI analysiert',
+    description: 'In 10 Sekunden vollständige Analyse',
+    icon: 'm12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z',
+  },
+  {
+    title: 'Ergebnis erhalten',
+    description: 'Sofort Klarheit über Preis, Lage, Risiken',
+    icon: 'M12 20V10M18 20V4M6 20v-4',
+  },
 ]
 ---
 
 <section id="so-funktionierts" class="mx-auto max-w-6xl px-6 py-24 text-center">
   <h2 class="font-display text-3xl md:text-4xl text-text-primary">So funktioniert es</h2>
 
-  <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
+  <div class="relative mt-16 grid grid-cols-1 gap-10 sm:grid-cols-3">
+    <div class="absolute left-[15%] right-[15%] top-8 hidden h-px bg-border-strong sm:block"></div>
+
     {steps.map((step, i) => (
-      <div class="flex flex-col items-center gap-3">
-        <div class="flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 text-3xl">
-          {step.icon}
+      <div class="step-card flex flex-col items-center gap-4" style={`animation-delay: ${i * 150}ms;`}>
+        <div class="relative flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-accent to-accent-luminous">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-on-accent">
+            <path d={step.icon}></path>
+          </svg>
         </div>
         <span class="font-mono text-xs tracking-widest text-accent-luminous uppercase">Schritt {i + 1}</span>
         <h3 class="font-display text-xl text-text-primary">{step.title}</h3>
-        <p class="font-body text-sm text-text-secondary">{step.description}</p>
+        <p class="max-w-xs font-body text-sm text-text-secondary">{step.description}</p>
       </div>
     ))}
   </div>
 
-  <div class="mt-12 flex flex-col items-center gap-4">
+  <div class="mt-16 flex flex-col items-center gap-4">
     <p class="font-body text-text-secondary">Probier es jetzt aus — kostenlos, ohne Registrierung</p>
     <Button variant="primary" href="#analysieren">Jetzt analysieren</Button>
   </div>
 </section>
+
+<style>
+  .step-card {
+    opacity: 0;
+  }
+
+  .step-card.in-view {
+    animation: fade-in-up 600ms ease-out both;
+  }
+</style>
+
+<script>
+  const cards = document.querySelectorAll('.step-card');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      }
+    },
+    { threshold: 0.2 },
+  );
+  cards.forEach((card) => observer.observe(card));
+</script>

@@ -13,12 +13,12 @@
   --color-accent-deep: #1f3f8a;
 
   /* Text color for content sitting directly on the accent gradient
-     (primary buttons): dark in dark mode, white in light mode (set
-     explicitly below rather than reusing --color-base/--color-text-
-     primary, since this needs to track "what reads well on the blue
-     button" specifically, not whatever the surrounding page happens
-     to use). */
-  --color-on-accent: #0a0c0b;
+     (primary buttons) — white in both themes, since the button's blue
+     background doesn't change between themes either. Its own token
+     rather than reusing --color-base/--color-text-primary, since this
+     tracks "what reads well on the blue button" specifically, not
+     whatever the surrounding page happens to use. */
+  --color-on-accent: #ffffff;
 
   --color-verdict-cheap: #2ecc8f;
   --color-verdict-fair: #2e5bc4;
@@ -73,8 +73,6 @@
   --color-text-disabled: #c4c8c6;
 
   --color-glow: #dbe6fb;
-
-  --color-on-accent: #ffffff;
 }
 
 /*

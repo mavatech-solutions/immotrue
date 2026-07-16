@@ -16,26 +16,30 @@ const BATCH_SIZE = 20
 const MAX_ANALYSES_PER_RUN = 500
 const CHANGE_THRESHOLD_PERCENT = 3
 
+// Preisalarm ist laut Plan ein Premium-Feature — der Cron prüft daher nur
+// (a) Premium-Nutzer und (b) Analysen, bei denen der Alarm nicht abgewählt
+// wurde. Zusätzlich werden die beiden Apify-Portale (kostenpflichtig pro
+// Abruf) nur alle 3 Tage geprüft statt täglich wie die frei gescrapten
+// Portale — das reduziert die teuren Apify-Calls auf ein Drittel, ohne
+// Preisänderungen wochenlang zu verpassen.
+const PAID_PORTALS = ['immoscout', 'immowelt']
+const PAID_RECHECK_HOURS = 72
+const FREE_RECHECK_HOURS = 20 // knapp unter 24h, toleriert Cron-Jitter
+
 interface AnalysisRow {
   id: string
   user_id: string | null
   original_url: string
   current_price: number | null
+  portal: string
+  last_price_check: string | null
 }
 
 Deno.serve(async () => {
   const startedAt = Date.now()
 
   try {
-    const { data: analyses, error } = await supabase
-      .from('analyses')
-      .select('id, user_id, original_url, current_price')
-      .neq('status', 'rejected')
-      .gt('analyzed_at', new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString())
-      .order('last_price_check', { ascending: true, nullsFirst: true })
-      .limit(MAX_ANALYSES_PER_RUN)
-
-    if (error) throw error
+    const analyses = await fetchEligibleAnalyses()
 
     let checked = 0
     let changed = 0
@@ -71,6 +75,39 @@ Deno.serve(async () => {
     return new Response(JSON.stringify({ error: 'job_failed' }), { status: 500 })
   }
 })
+
+// Two queries (paid-portal / free-portal) rather than one combined filter —
+// each tier has its own recheck-frequency threshold, and expressing that as
+// a single PostgREST filter string would be far less readable than just
+// running it twice and merging.
+async function fetchEligibleAnalyses(): Promise<AnalysisRow[]> {
+  const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString()
+  const paidThreshold = new Date(Date.now() - PAID_RECHECK_HOURS * 60 * 60 * 1000).toISOString()
+  const freeThreshold = new Date(Date.now() - FREE_RECHECK_HOURS * 60 * 60 * 1000).toISOString()
+
+  const baseQuery = () =>
+    supabase
+      .from('analyses')
+      .select('id, user_id, original_url, current_price, portal, last_price_check, profiles!inner(is_premium)')
+      .eq('profiles.is_premium', true)
+      .eq('price_alert_enabled', true)
+      .neq('status', 'rejected')
+      .gt('analyzed_at', ninetyDaysAgo)
+      .order('last_price_check', { ascending: true, nullsFirst: true })
+      .limit(MAX_ANALYSES_PER_RUN)
+
+  const [paidResult, freeResult] = await Promise.all([
+    baseQuery().in('portal', PAID_PORTALS).or(`last_price_check.is.null,last_price_check.lt.${paidThreshold}`),
+    baseQuery()
+      .not('portal', 'in', `(${PAID_PORTALS.join(',')})`)
+      .or(`last_price_check.is.null,last_price_check.lt.${freeThreshold}`),
+  ])
+
+  if (paidResult.error) throw paidResult.error
+  if (freeResult.error) throw freeResult.error
+
+  return [...(paidResult.data ?? []), ...(freeResult.data ?? [])].slice(0, MAX_ANALYSES_PER_RUN) as unknown as AnalysisRow[]
+}
 
 // Returns true if a >=3% change was detected and recorded, false otherwise
 // (including "listing offline" and other per-item errors — those are

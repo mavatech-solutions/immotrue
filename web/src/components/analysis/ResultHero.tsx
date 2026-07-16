@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, animate } from 'framer-motion';
 import { getPortalById } from '../../../../shared/utils/portalDetector';
 import type { SavedAnalysis } from '../../../../shared/types/index';
+import { generateAnalysisPdf } from '../../lib/generatePdf';
 
 const VERDICT_LABEL: Record<string, string> = {
   cheap: 'GÜNSTIG',
@@ -98,9 +99,10 @@ export default function ResultHero({ analysis, isPremium }: { analysis: SavedAna
           </a>
           <button
             type="button"
-            title="PDF-Export ist noch nicht verfügbar"
-            className="inline-flex items-center justify-center rounded-pill bg-linear-to-r from-accent to-accent-luminous px-5 py-2.5 font-body text-sm text-on-accent opacity-50"
-            disabled
+            title={isPremium ? undefined : 'PDF-Export ist ein Premium-Feature'}
+            onClick={() => isPremium && generateAnalysisPdf(analysis)}
+            disabled={!isPremium}
+            className="inline-flex items-center justify-center rounded-pill bg-linear-to-r from-accent to-accent-luminous px-5 py-2.5 font-body text-sm text-on-accent transition-opacity duration-200 hover:opacity-90 disabled:opacity-50 disabled:pointer-events-none"
           >
             Als PDF exportieren
           </button>

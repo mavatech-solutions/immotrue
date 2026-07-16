@@ -51,9 +51,9 @@ const mobileLinks = [
 <div id="mobile-nav" class="mobile-nav md:hidden" aria-hidden="true">
   <nav class="mobile-nav-links">
     {mobileLinks.map((link, i) => (
-      <a href={link.href} style={`--i:${i};`}>{link.label}</a>
+      <a href={link.href} class="mobile-nav-link" style={`--i:${i};`}>{link.label}</a>
     ))}
-    <Button variant="primary" href="/login" class="mt-4 text-base" style={`--i:${mobileLinks.length};`}>
+    <Button variant="primary" href="/login" class="mt-4" style={`--i:${mobileLinks.length};`}>
       Kostenlos starten
     </Button>
     <ThemeToggle class="mt-2" style={`--i:${mobileLinks.length + 1};`} />
@@ -168,10 +168,18 @@ const mobileLinks = [
     gap: 1.75rem;
   }
 
-  .mobile-nav-links > * {
+  /* Only the plain links get the big-serif/text-primary treatment —
+     deliberately NOT a `.mobile-nav-links > *` rule, since that would
+     also catch the Button (and beat its own text-on-accent color via
+     higher specificity from this component's scoped attribute
+     selector, regardless of which one the caller intended to win). */
+  .mobile-nav-link {
     font-family: var(--font-display);
     font-size: 2rem;
     color: var(--color-text-primary);
+  }
+
+  .mobile-nav-links > * {
     opacity: 0;
   }
 

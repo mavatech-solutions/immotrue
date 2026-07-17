@@ -1,0 +1,33 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  type?: 'website' | 'article';
+  image?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { title, description, type = 'website', image, structuredData } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = image ? new URL(image, Astro.site).toString() : new URL('/og-default.png', Astro.site).toString();
+const schemas = structuredData ? (Array.isArray(structuredData) ? structuredData : [structuredData]) : [];
+---
+
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:site_name" content="ImmoTrue" />
+<meta property="og:locale" content="de_DE" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageURL} />
+
+{schemas.map((schema) => <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />)}

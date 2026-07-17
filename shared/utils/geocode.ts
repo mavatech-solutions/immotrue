@@ -3,7 +3,7 @@
 
 // Nominatim's usage policy requires a descriptive User-Agent identifying
 // the application (not a browser UA) — https://operations.osmfoundation.org/policies/nominatim/
-const USER_AGENT = 'ImmoTrue/0.1 (https://immotrue.app)'
+const USER_AGENT = 'ImmoTrue/0.1 (https://immotrue.de)'
 
 export async function geocodeAddress(query: string): Promise<{ lat: number; lng: number } | null> {
   const url = new URL('https://nominatim.openstreetmap.org/search')

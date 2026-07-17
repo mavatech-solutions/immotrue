@@ -8,7 +8,7 @@ const CORS_HEADERS = {
 
 // Overpass has no equivalent shared usage-policy requirement, but reusing
 // the same descriptive UA here is good practice for a public API.
-const USER_AGENT = 'ImmoTrue/0.1 (https://immotrue.app)'
+const USER_AGENT = 'ImmoTrue/0.1 (https://immotrue.de)'
 const POI_RADIUS_M = 500
 const NOISE_RADIUS_M = 50
 

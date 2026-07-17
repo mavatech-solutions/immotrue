@@ -6,12 +6,15 @@ import AmbientParticles from '../components/layout/AmbientParticles.astro';
 interface Props {
   title: string;
   description?: string;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description } = Astro.props;
+const { title, description, ogType, ogImage, structuredData } = Astro.props;
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} ogType={ogType} ogImage={ogImage} structuredData={structuredData}>
   <AmbientParticles />
   <Header />
   <slot />

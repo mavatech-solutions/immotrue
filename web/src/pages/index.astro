@@ -7,9 +7,38 @@ import HowItWorks from '../components/landing/HowItWorks.astro';
 import ExampleAnalysisSection from '../components/landing/ExampleAnalysisSection.astro';
 import PricingSection from '../components/landing/PricingSection.astro';
 import FaqSection from '../components/landing/FaqSection.astro';
+
+// Real prices, kept in sync with PricingSection.astro's actual tiers —
+// not placeholder figures.
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'ImmoTrue',
+    url: 'https://immotrue.de',
+    description: 'KI-gestützte Immobilienanalyse für Deutschland, Österreich und die Schweiz.',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Web',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'ImmoTrue Premium',
+    description: 'KI-Vollbericht, Portfolio, Preisalarm, Finanzierungsrechner und Wunschalarm für Immobilienkäufer.',
+    offers: [
+      { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'EUR' },
+      { '@type': 'Offer', name: 'Premium (monatlich)', price: '4.99', priceCurrency: 'EUR' },
+      { '@type': 'Offer', name: 'Premium (jährlich)', price: '34.99', priceCurrency: 'EUR' },
+    ],
+  },
+];
 ---
 
-<Landing title="ImmoTrue — Wahrheit über jedes Inserat" description="KI-gestützte Immobilienanalyse für DACH. Alle 6 Portale. Ein Klick zur Wahrheit.">
+<Landing
+  title="ImmoTrue — Wahrheit über jedes Inserat"
+  description="KI-gestützte Immobilienanalyse für DACH. Alle 6 Portale. Ein Klick zur Wahrheit."
+  structuredData={structuredData}
+>
   <Hero />
   <section class="mx-auto flex max-w-6xl justify-center px-6 py-8">
     <ResultPreviewCard />

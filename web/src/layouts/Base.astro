@@ -7,13 +7,23 @@ import '@fontsource/inter/600.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
+import SEO from '../components/SEO.astro';
 
 interface Props {
   title: string;
   description?: string;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description = 'KI-gestützte Immobilienanalyse für DACH.' } = Astro.props;
+const {
+  title,
+  description = 'KI-gestützte Immobilienanalyse für DACH.',
+  ogType = 'website',
+  ogImage,
+  structuredData,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -21,9 +31,9 @@ const { title, description = 'KI-gestützte Immobilienanalyse für DACH.' } = As
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <SEO title={title} description={description} type={ogType} image={ogImage} structuredData={structuredData} />
     <script is:inline>
       // Blocking + inline so this runs before first paint — anything
       // deferred would flash the default (dark) theme first for anyone

@@ -18,9 +18,21 @@ export default function RiskBreakdownSection({ analysis }: { analysis: SavedAnal
   const breakdown = analysis.risk_breakdown;
   if (!breakdown) return null;
 
+  const overallScore = Math.round(
+    CATEGORIES.reduce((sum, { key }) => sum + breakdown[key], 0) / CATEGORIES.length,
+  );
+
   return (
     <div>
-      <h2 className="font-display text-xl text-text-primary">Risiko-Analyse</h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-display text-xl text-text-primary">Risiko-Analyse</h2>
+        <span
+          className="inline-flex items-center gap-1 rounded-pill px-3 py-1 font-display text-sm"
+          style={{ backgroundColor: `color-mix(in srgb, ${riskColor(overallScore)} 15%, transparent)`, color: riskColor(overallScore) }}
+        >
+          {overallScore}/100
+        </span>
+      </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {CATEGORIES.map(({ key, icon, label }) => {

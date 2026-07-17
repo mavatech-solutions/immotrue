@@ -15,8 +15,22 @@ const { title, description } = Astro.props;
   <div class="flex min-h-screen">
     <AppSidebar />
     <div class="flex min-w-0 flex-1 flex-col">
-      <AppTopBar client:load />
-      <main class="flex-1 px-8 py-8">
+      <div class="sticky top-0 z-30 flex items-center border-b border-border-subtle bg-base/90 backdrop-blur">
+        <button
+          type="button"
+          id="sidebar-toggle"
+          aria-label="Menü öffnen"
+          class="hamburger relative ml-6 shrink-0 text-text-primary md:hidden"
+        >
+          <span class="hamburger-line line-1"></span>
+          <span class="hamburger-line line-2"></span>
+          <span class="hamburger-line line-3"></span>
+        </button>
+        <div class="min-w-0 flex-1">
+          <AppTopBar client:load />
+        </div>
+      </div>
+      <main class="flex-1 px-4 py-6 md:px-8 md:py-8">
         <slot />
       </main>
     </div>

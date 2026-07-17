@@ -35,8 +35,8 @@ export default function AppTopBar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex items-center gap-4 border-b border-border-subtle bg-base/90 px-6 py-3 backdrop-blur">
-      <form onSubmit={handleSubmit} className="relative flex-1 max-w-xl">
+    <div className="flex flex-1 items-center gap-4 px-4 py-3 md:px-6">
+      <form onSubmit={handleSubmit} className="relative hidden flex-1 max-w-xl sm:block">
         <input
           type="url"
           value={url}
@@ -86,6 +86,6 @@ export default function AppTopBar() {
           )}
         </div>
       </div>
-    </header>
+    </div>
   );
 }

@@ -12,11 +12,27 @@ const NAV_ITEMS = [
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
-<aside class="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-border-subtle bg-surface">
-  <a href="/dashboard" class="flex items-center gap-2 px-6 py-5 font-display text-lg text-text-primary">
-    <Image src={logo} alt="ImmoTrue" width={96} height={96} class="h-8 w-8" />
-    ImmoTrue
-  </a>
+<!-- Off-canvas drawer on mobile (fixed, slid out via -translate-x-full,
+     toggled by #sidebar-toggle in AppShell.astro), a normal sticky
+     in-flow column from md up. -->
+<aside
+  id="app-sidebar"
+  class="fixed inset-y-0 left-0 z-50 flex h-screen w-64 shrink-0 -translate-x-full flex-col border-r border-border-subtle bg-surface transition-transform duration-300 md:sticky md:top-0 md:z-auto md:w-60 md:translate-x-0"
+>
+  <div class="flex items-center justify-between px-6 py-5">
+    <a href="/dashboard" class="flex items-center gap-2 font-display text-lg text-text-primary">
+      <Image src={logo} alt="ImmoTrue" width={96} height={96} class="h-8 w-8" />
+      ImmoTrue
+    </a>
+    <button
+      type="button"
+      id="sidebar-close"
+      aria-label="Menü schließen"
+      class="text-text-secondary md:hidden"
+    >
+      ✕
+    </button>
+  </div>
 
   <nav class="flex flex-col gap-1 px-3">
     {NAV_ITEMS.map((item) => {
@@ -37,3 +53,34 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     })}
   </nav>
 </aside>
+
+<div
+  id="sidebar-backdrop"
+  class="fixed inset-0 z-40 hidden bg-base/70 backdrop-blur-sm md:hidden"
+></div>
+
+<script>
+  const sidebar = document.getElementById('app-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const toggle = document.getElementById('sidebar-toggle');
+  const closeBtn = document.getElementById('sidebar-close');
+
+  function setOpen(open: boolean) {
+    sidebar?.classList.toggle('-translate-x-full', !open);
+    backdrop?.classList.toggle('hidden', !open);
+    toggle?.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  toggle?.addEventListener('click', () => setOpen(true));
+  closeBtn?.addEventListener('click', () => setOpen(false));
+  backdrop?.addEventListener('click', () => setOpen(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+  // Tapping a nav link should close the drawer too (same page navigations
+  // won't otherwise reset the open state before the new page paints).
+  sidebar?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => setOpen(false));
+  });
+</script>

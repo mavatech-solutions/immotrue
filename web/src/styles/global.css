@@ -153,8 +153,14 @@ body {
 /* Header.astro */
 #site-header {
   background-color: color-mix(in srgb, var(--color-base) 0%, transparent);
-  backdrop-filter: blur(0.01px);
+  /* -webkit- prefix declared first, standard property last: the build's
+     CSS minifier was found to silently drop whichever of a pair of
+     equal-value prefixed/unprefixed declarations comes FIRST (treating
+     it as a redundant duplicate) — confirmed live, only
+     -webkit-backdrop-filter survived while plain backdrop-filter
+     vanished. Order matters here more than it should. */
   -webkit-backdrop-filter: blur(0.01px);
+  backdrop-filter: blur(0.01px);
   border-bottom: 1px solid var(--color-border-subtle);
   transition:
     background-color 400ms ease,
@@ -163,8 +169,8 @@ body {
 
 #site-header.scrolled {
   background-color: color-mix(in srgb, var(--color-base) 40%, transparent);
-  backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
 }
 
 .hamburger {
@@ -215,8 +221,8 @@ body {
   align-items: center;
   justify-content: center;
   background-color: color-mix(in srgb, var(--color-base) 0%, transparent);
-  backdrop-filter: blur(0.01px);
   -webkit-backdrop-filter: blur(0.01px);
+  backdrop-filter: blur(0.01px);
   opacity: 0;
   pointer-events: none;
   transition:
@@ -227,8 +233,8 @@ body {
 
 .mobile-nav.open {
   background-color: color-mix(in srgb, var(--color-base) 92%, transparent);
-  backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
   opacity: 1;
   pointer-events: auto;
 }

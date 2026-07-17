@@ -144,7 +144,15 @@ export function generateAnalysisPdf(analysis: SavedAnalysis): void {
       rechtliches: 'Rechtliches',
     };
     for (const [key, label] of Object.entries(labels)) {
-      row(label, `${analysis.risk_breakdown[key as keyof typeof analysis.risk_breakdown]}/100`);
+      // Older saved analyses stored a plain number per category instead of
+      // { value, reason } — handle both rather than printing "undefined".
+      const entry = analysis.risk_breakdown[key as keyof typeof analysis.risk_breakdown] as
+        | number
+        | { value: number; reason: string };
+      const value = typeof entry === 'number' ? entry : entry.value;
+      const reason = typeof entry === 'number' ? null : entry.reason;
+      row(label, `${value}/100`);
+      if (reason) paragraph(reason);
     }
     y += 2;
   }

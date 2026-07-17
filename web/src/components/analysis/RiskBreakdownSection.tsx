@@ -14,13 +14,20 @@ function riskColor(value: number): string {
   return 'var(--color-verdict-overpriced)';
 }
 
+// Older saved analyses stored risk_breakdown as plain numbers per category
+// (before the AI's schema grew a "reason" alongside each value) — this
+// normalizes either shape so both still render instead of breaking.
+function normalize(entry: number | { value: number; reason: string }): { value: number; reason: string | null } {
+  if (typeof entry === 'number') return { value: entry, reason: null };
+  return entry;
+}
+
 export default function RiskBreakdownSection({ analysis }: { analysis: SavedAnalysis }) {
   const breakdown = analysis.risk_breakdown;
   if (!breakdown) return null;
 
-  const overallScore = Math.round(
-    CATEGORIES.reduce((sum, { key }) => sum + breakdown[key], 0) / CATEGORIES.length,
-  );
+  const scores = CATEGORIES.map(({ key, icon, label }) => ({ key, icon, label, ...normalize(breakdown[key] as never) }));
+  const overallScore = Math.round(scores.reduce((sum, { value }) => sum + value, 0) / scores.length);
 
   return (
     <div>
@@ -34,24 +41,26 @@ export default function RiskBreakdownSection({ analysis }: { analysis: SavedAnal
         </span>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        {CATEGORIES.map(({ key, icon, label }) => {
-          const value = breakdown[key];
-          return (
-            <div key={key} className="rounded-2xl border border-border-subtle bg-surface p-4">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {scores.map(({ key, icon, label, value, reason }) => (
+          <div key={key} className="flex flex-col gap-3 rounded-2xl border border-border-subtle bg-surface p-4">
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2 font-body text-sm text-text-primary">
                 <span>{icon}</span>
                 {label}
               </div>
-              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-pill bg-border-subtle">
-                <div
-                  className="h-full rounded-pill"
-                  style={{ width: `${value}%`, backgroundColor: riskColor(value) }}
-                />
-              </div>
+              <span className="font-display text-sm" style={{ color: riskColor(value) }}>
+                {value}/100
+              </span>
             </div>
-          );
-        })}
+
+            <div className="h-1.5 w-full overflow-hidden rounded-pill bg-border-subtle">
+              <div className="h-full rounded-pill" style={{ width: `${value}%`, backgroundColor: riskColor(value) }} />
+            </div>
+
+            {reason && <p className="font-body text-xs text-text-secondary">{reason}</p>}
+          </div>
+        ))}
       </div>
     </div>
   );

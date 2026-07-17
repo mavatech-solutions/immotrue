@@ -20,6 +20,19 @@ Nenne konkrete Zahlen. Erkläre für Laien.
 Erkläre versteckte Kosten, die Käufer übersehen.
 Gib eine klare Empfehlung mit Begründung.`
 
+function riskCategorySchema(description: string) {
+  return {
+    type: 'object',
+    description,
+    properties: {
+      value: { type: 'integer', description: '0-100, höher = mehr Risiko' },
+      reason: { type: 'string', description: '1-2 Sätze, warum genau dieser Wert für dieses Objekt zutrifft' },
+    },
+    required: ['value', 'reason'],
+    additionalProperties: false,
+  }
+}
+
 // Structured output via forced, strict tool use — the API validates the
 // schema server-side, so this is more reliable than the plan's original
 // "respond only in valid JSON" prompting approach (no markdown-wrapping or
@@ -42,17 +55,15 @@ const ANALYSIS_TOOL = {
       riskBreakdown: {
         type: 'object',
         description:
-          '5 Risiko-Kategorien, je 0-100 (höher = mehr Risiko), basierend auf den tatsächlich verfügbaren Daten und der Objektbeschreibung.',
+          '5 Risiko-Kategorien, je mit einem 0-100-Wert (höher = mehr Risiko) und einer kurzen Begründung, basierend auf den tatsächlich verfügbaren Daten und der Objektbeschreibung.',
         properties: {
-          baujahrRisiko: { type: 'integer', description: 'Baujahr und typische Baujahres-Mängel' },
-          energieeffizienz: { type: 'integer', description: 'Basierend auf Energieklasse, falls bekannt' },
-          sanierungsbedarf: { type: 'integer', description: 'Geschätzter Sanierungsbedarf aus Baujahr, Zustand, Beschreibung' },
-          lageRisiko: { type: 'integer', description: 'Lage-Nachteile, invers zum Lage-Score' },
-          rechtliches: {
-            type: 'integer',
-            description:
-              'Rechtliche Risiken wie Denkmalschutz, Erbbaurecht, Wohnrecht, laufende Rechtsstreitigkeiten — nur falls in der Beschreibung erwähnt, sonst niedriger Standardwert',
-          },
+          baujahrRisiko: riskCategorySchema('Baujahr und typische Baujahres-Mängel'),
+          energieeffizienz: riskCategorySchema('Basierend auf Energieklasse, falls bekannt'),
+          sanierungsbedarf: riskCategorySchema('Geschätzter Sanierungsbedarf aus Baujahr, Zustand, Beschreibung'),
+          lageRisiko: riskCategorySchema('Lage-Nachteile, invers zum Lage-Score'),
+          rechtliches: riskCategorySchema(
+            'Rechtliche Risiken wie Denkmalschutz, Erbbaurecht, Wohnrecht, laufende Rechtsstreitigkeiten — nur falls in der Beschreibung erwähnt, sonst niedriger Standardwert',
+          ),
         },
         required: ['baujahrRisiko', 'energieeffizienz', 'sanierungsbedarf', 'lageRisiko', 'rechtliches'],
         additionalProperties: false,

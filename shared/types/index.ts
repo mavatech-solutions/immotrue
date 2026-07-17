@@ -82,18 +82,25 @@ export type InvestmentVerdict = 'good' | 'medium' | 'bad'
 export type AnalysisStatus = 'interesting' | 'favorite' | 'viewed' | 'rejected'
 export type NotificationFrequency = 'immediate' | 'daily'
 
-// 0-100 per category, higher = more risk. Genuinely assessed by the AI
-// (not derived after the fact from other fields) so all five categories
-// are consistent — including "rechtliches", which has no dedicated
-// stored field of its own to derive from (things like Denkmalschutz,
-// Erbbaurecht etc. only ever show up in the free-text description the
-// AI already reads, never as a structured column).
+// value: 0-100, higher = more risk. reason: 1-2 sentence explanation of
+// *why* the AI landed on that number for this specific property — both
+// genuinely assessed by the AI (not derived after the fact from other
+// fields), so all five categories are consistent — including
+// "rechtliches", which has no dedicated stored field of its own to derive
+// from (things like Denkmalschutz, Erbbaurecht etc. only ever show up in
+// the free-text description the AI already reads, never as a structured
+// column).
+export interface RiskCategoryScore {
+  value: number
+  reason: string
+}
+
 export interface RiskBreakdown {
-  baujahrRisiko: number
-  energieeffizienz: number
-  sanierungsbedarf: number
-  lageRisiko: number
-  rechtliches: number
+  baujahrRisiko: RiskCategoryScore
+  energieeffizienz: RiskCategoryScore
+  sanierungsbedarf: RiskCategoryScore
+  lageRisiko: RiskCategoryScore
+  rechtliches: RiskCategoryScore
 }
 
 // Output of the Claude analysis Edge Function

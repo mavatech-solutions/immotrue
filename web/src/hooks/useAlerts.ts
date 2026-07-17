@@ -12,6 +12,16 @@ export interface AlertedListing {
 
 export type NewAlert = Omit<Alert, 'id' | 'user_id' | 'created_at' | 'active'>;
 
+// Enforced in a DB trigger (see migration 20260717100000) so it can't be
+// bypassed via a direct API call — ImmoScout24/Immowelt alert-matching
+// costs real money per new listing, unlike the 3 free-scraped portals.
+function friendlyAlertError(error: { message?: string; code?: string }): Error {
+  if (error.code === 'P0001' || error.message?.includes('max_paid_portal_alerts_exceeded')) {
+    return new Error('Maximal 2 aktive Alarme mit ImmoScout24 oder Immowelt gleichzeitig. Bitte einen anderen Alarm deaktivieren oder nur kostenlose Portale wählen.');
+  }
+  return new Error(error.message ?? 'Alarm konnte nicht gespeichert werden.');
+}
+
 async function fetchAlerts(): Promise<Alert[]> {
   const {
     data: { session },
@@ -87,7 +97,7 @@ export function useAlerts() {
       } = await supabase.auth.getSession();
       if (!session) throw new Error('not authenticated');
       const { error } = await supabase.from('alerts').insert({ ...data, user_id: session.user.id });
-      if (error) throw error;
+      if (error) throw friendlyAlertError(error);
     },
     onSuccess: invalidate,
   });
@@ -95,7 +105,7 @@ export function useAlerts() {
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<Alert> }) => {
       const { error } = await supabase.from('alerts').update(data).eq('id', id);
-      if (error) throw error;
+      if (error) throw friendlyAlertError(error);
     },
     onSuccess: invalidate,
   });

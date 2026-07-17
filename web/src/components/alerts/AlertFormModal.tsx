@@ -23,16 +23,22 @@ function segmentClass(active: boolean): string {
   }`;
 }
 
+const PAID_PORTAL_IDS = ['immoscout', 'immowelt'];
+
 export default function AlertFormModal({
   editing,
   onClose,
   onSave,
   saving,
+  error,
+  paidPortalDisabled,
 }: {
   editing: Alert | null;
   onClose: () => void;
   onSave: (data: NewAlert) => Promise<void>;
   saving: boolean;
+  error: string | null;
+  paidPortalDisabled: boolean;
 }) {
   const [name, setName] = useState(editing?.name ?? '');
   const [city, setCity] = useState(editing?.city ?? '');
@@ -40,7 +46,13 @@ export default function AlertFormModal({
   const [maxPrice, setMaxPrice] = useState(editing?.max_price ?? 500000);
   const [minRooms, setMinRooms] = useState(editing?.min_rooms ?? 2);
   const [propertyType, setPropertyType] = useState(editing?.property_type ?? 'beides');
-  const [portals, setPortals] = useState<string[]>(editing?.portals ?? getAllPortals().map((p) => p.id));
+  const [portals, setPortals] = useState<string[]>(() => {
+    const initial = editing?.portals ?? getAllPortals().map((p) => p.id);
+    // A new alert while the paid-portal cap is reached starts with those
+    // portals unchecked rather than pre-selecting something save would reject.
+    if (editing || !paidPortalDisabled) return initial;
+    return initial.filter((id) => !PAID_PORTAL_IDS.includes(id));
+  });
   const [frequency, setFrequency] = useState<NotificationFrequency>(editing?.notification_frequency ?? 'immediate');
 
   function togglePortal(id: string) {
@@ -136,18 +148,35 @@ export default function AlertFormModal({
 
         <p className="mt-4 font-body text-sm text-text-secondary">Portale</p>
         <div className="mt-2 flex flex-wrap gap-2">
-          {getAllPortals().map((p) => (
-            <label
-              key={p.id}
-              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-pill border px-3 py-1.5 font-body text-sm transition-colors duration-200 ${
-                portals.includes(p.id) ? 'border-accent-luminous text-accent-luminous' : 'border-border-strong text-text-secondary'
-              }`}
-            >
-              <input type="checkbox" checked={portals.includes(p.id)} onChange={() => togglePortal(p.id)} className="hidden" />
-              {p.flag} {p.name}
-            </label>
-          ))}
+          {getAllPortals().map((p) => {
+            const isPaid = PAID_PORTAL_IDS.includes(p.id);
+            const isChecked = portals.includes(p.id);
+            const isDisabled = isPaid && paidPortalDisabled && !isChecked;
+            return (
+              <label
+                key={p.id}
+                title={isDisabled ? 'Maximal 2 aktive Alarme mit ImmoScout24 oder Immowelt gleichzeitig' : undefined}
+                className={`inline-flex items-center gap-1.5 rounded-pill border px-3 py-1.5 font-body text-sm transition-colors duration-200 ${
+                  isDisabled ? 'cursor-not-allowed opacity-40 border-border-strong text-text-secondary' : 'cursor-pointer'
+                } ${isChecked && !isDisabled ? 'border-accent-luminous text-accent-luminous' : !isDisabled ? 'border-border-strong text-text-secondary' : ''}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  disabled={isDisabled}
+                  onChange={() => togglePortal(p.id)}
+                  className="hidden"
+                />
+                {p.flag} {p.name}
+              </label>
+            );
+          })}
         </div>
+        {paidPortalDisabled && (
+          <p className="mt-2 font-body text-xs text-text-tertiary">
+            ImmoScout24 und Immowelt sind bei diesem Alarm deaktiviert — du hast bereits 2 aktive Alarme mit diesen Portalen (Kostengrenze).
+          </p>
+        )}
 
         <p className="mt-4 font-body text-sm text-text-secondary">Benachrichtigung</p>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -158,6 +187,8 @@ export default function AlertFormModal({
             Täglich
           </button>
         </div>
+
+        {error && <p className="mt-4 font-body text-sm text-verdict-overpriced">{error}</p>}
 
         <div className="mt-6 flex justify-end gap-3">
           <button

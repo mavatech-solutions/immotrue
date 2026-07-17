@@ -31,9 +31,13 @@ export async function searchImmoscout(alert: Alert, signal: AbortSignal): Promis
 
   // monitorMode: only new listings since the last run against this exact
   // set of search URLs are returned (and billed) — repeat polling stays cheap.
+  // pageLimit caps the worst case (a pathologically broad alert) at
+  // ~80-100 results/run (~20-25 per page) rather than the actor's own
+  // 8,000-listing ceiling — this is a pure cost circuit breaker, real
+  // alerts (city + price + room filtered) should never get close to it.
   const items = await runApifyActor(
     'clearpath/immoscout24-api-pro',
-    { startUrls, monitorMode: true },
+    { startUrls, monitorMode: true, pageLimit: 4 },
     signal,
   )
 

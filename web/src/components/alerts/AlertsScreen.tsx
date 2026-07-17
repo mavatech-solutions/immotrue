@@ -101,20 +101,43 @@ function PremiumAlertsView() {
   const { alerts, isLoading, isError, error, recentMatches, matchCounts, create, update, remove, isSaving } = useAlerts();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Alert | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const activeCount = alerts.filter((a) => a.active).length;
   const canCreate = activeCount < MAX_ACTIVE_ALERTS;
 
+  // Mirrors the DB trigger's rule (max 2 active alerts using ImmoScout24 or
+  // Immowelt) so the form can disable those checkboxes proactively instead
+  // of letting the user hit a save error — excludes the alert being edited
+  // so re-saving it with the same portals doesn't get blocked by itself.
+  const otherPaidPortalActiveCount = alerts.filter(
+    (a) => a.active && a.id !== editing?.id && (a.portals ?? []).some((p) => p === 'immoscout' || p === 'immowelt'),
+  ).length;
+  const paidPortalCapReached = otherPaidPortalActiveCount >= 2;
+
   async function handleSave(data: NewAlert) {
-    if (editing) await update(editing.id, data);
-    else await create(data);
-    setModalOpen(false);
-    setEditing(null);
+    setSaveError(null);
+    try {
+      if (editing) await update(editing.id, data);
+      else await create(data);
+      setModalOpen(false);
+      setEditing(null);
+    } catch (error) {
+      setSaveError((error as Error).message);
+    }
   }
 
   async function handleDelete(alert: Alert) {
     if (!window.confirm(`Alarm "${alert.name ?? 'Unbenannter Alarm'}" wirklich löschen?`)) return;
     await remove(alert.id);
+  }
+
+  async function handleToggle(alert: Alert) {
+    try {
+      await update(alert.id, { active: !alert.active });
+    } catch (error) {
+      window.alert((error as Error).message);
+    }
   }
 
   if (isLoading) return <p className="py-24 text-center font-body text-text-secondary">Lädt…</p>;
@@ -128,6 +151,7 @@ function PremiumAlertsView() {
           type="button"
           onClick={() => {
             setEditing(null);
+            setSaveError(null);
             setModalOpen(true);
           }}
           disabled={!canCreate}
@@ -149,9 +173,10 @@ function PremiumAlertsView() {
               key={alert.id}
               alert={alert}
               matchCount={matchCounts[alert.id] ?? 0}
-              onToggle={() => update(alert.id, { active: !alert.active })}
+              onToggle={() => handleToggle(alert)}
               onEdit={() => {
                 setEditing(alert);
+                setSaveError(null);
                 setModalOpen(true);
               }}
               onDelete={() => handleDelete(alert)}
@@ -195,6 +220,8 @@ function PremiumAlertsView() {
         <AlertFormModal
           editing={editing}
           saving={isSaving}
+          error={saveError}
+          paidPortalDisabled={paidPortalCapReached}
           onClose={() => {
             setModalOpen(false);
             setEditing(null);

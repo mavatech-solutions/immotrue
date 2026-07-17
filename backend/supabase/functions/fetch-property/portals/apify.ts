@@ -1,39 +1,11 @@
 import type { PropertyData } from '../../../../../shared/types/index.ts'
+import { runApifyActor } from '../../../../../shared/utils/apify.ts'
 import { ListingOfflineError } from '../errors.ts'
 
-async function runApifyActor(
-  actorId: string,
-  input: Record<string, unknown>,
-  signal: AbortSignal,
-): Promise<Record<string, unknown>[]> {
-  const token = Deno.env.get('APIFY_TOKEN')
-  if (!token) throw new Error('APIFY_TOKEN secret is not set')
-
-  // Slashes in "owner/actor-name" become tildes in the URL path.
-  const encodedActorId = actorId.replace('/', '~')
-  const res = await fetch(
-    `https://api.apify.com/v2/actors/${encodedActorId}/run-sync-get-dataset-items`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(input),
-      signal,
-    },
-  )
-
-  if (!res.ok) throw new Error(`Apify actor ${actorId} responded with HTTP ${res.status}`)
-
-  const items = await res.json()
-  if (!Array.isArray(items) || items.length === 0) throw new ListingOfflineError()
-
-  return items
-}
-
 export async function scrapeImmoscout24ViaApify(url: string, signal: AbortSignal): Promise<PropertyData> {
-  const [item] = await runApifyActor('clearpath/immoscout24-detail-listing-scraper', { urls: [url] }, signal)
+  const items = await runApifyActor('clearpath/immoscout24-detail-listing-scraper', { urls: [url] }, signal)
+  if (items.length === 0) throw new ListingOfflineError()
+  const [item] = items
 
   const price = numberOrNull(item.purchase_price)
   const size = numberOrNull(item.size)
@@ -69,7 +41,9 @@ export async function scrapeImmoscout24ViaApify(url: string, signal: AbortSignal
 }
 
 export async function scrapeImmoweltViaApify(url: string, signal: AbortSignal): Promise<PropertyData> {
-  const [item] = await runApifyActor('blackfalcondata/immowelt-scraper', { startUrls: [url] }, signal)
+  const items = await runApifyActor('blackfalcondata/immowelt-scraper', { startUrls: [url] }, signal)
+  if (items.length === 0) throw new ListingOfflineError()
+  const [item] = items
 
   const price = numberOrNull(item.price)
   const size = numberOrNull(item.livingAreaSqm)

@@ -1,12 +1,13 @@
 import type { LocationData } from '../../../../shared/types/index.ts'
+import { geocodeAddress } from '../../../../shared/utils/geocode.ts'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Nominatim's usage policy requires a descriptive User-Agent identifying
-// the application (not a browser UA) — https://operations.osmfoundation.org/policies/nominatim/
+// Overpass has no equivalent shared usage-policy requirement, but reusing
+// the same descriptive UA here is good practice for a public API.
 const USER_AGENT = 'ImmoTrue/0.1 (https://immotrue.app)'
 const POI_RADIUS_M = 500
 const NOISE_RADIUS_M = 50
@@ -20,7 +21,7 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: 'invalid_input', message: 'address and city are required.' }, 400)
     }
 
-    const coordinates = await geocode(`${address}, ${city}`)
+    const coordinates = await geocodeAddress(`${address}, ${city}`)
     if (!coordinates) {
       return jsonResponse({ error: 'geocoding_failed', message: 'Adresse konnte nicht gefunden werden.' }, 404)
     }
@@ -57,21 +58,6 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: 'internal_error', message: 'Unerwarteter Fehler.' }, 500)
   }
 })
-
-async function geocode(query: string): Promise<{ lat: number; lng: number } | null> {
-  const url = new URL('https://nominatim.openstreetmap.org/search')
-  url.searchParams.set('q', query)
-  url.searchParams.set('format', 'json')
-  url.searchParams.set('limit', '1')
-
-  const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
-  if (!res.ok) throw new Error(`Nominatim responded with HTTP ${res.status}`)
-
-  const results = await res.json()
-  if (!Array.isArray(results) || results.length === 0) return null
-
-  return { lat: Number(results[0].lat), lng: Number(results[0].lon) }
-}
 
 interface PoiCounts {
   schools: number

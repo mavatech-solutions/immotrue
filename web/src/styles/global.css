@@ -133,3 +133,158 @@ body {
     opacity: 1;
   }
 }
+
+/*
+  The rules below belong to Header.astro, ThemeToggle.astro, and
+  PricingSection.astro — moved here from their own component-scoped
+  <style> blocks because of a reproducible Astro + Tailwind v4
+  (rolldown-vite) production-build bug: those specific components'
+  scoped styles silently vanish from `astro build` output (present in
+  `astro dev`, present in the rendered HTML's class names, but the CSS
+  rules themselves are just gone from the compiled bundle — confirmed
+  across a full cache clear and a dependency upgrade, so it isn't a
+  stale-cache artifact). Plain global.css CSS survives the same build
+  correctly, so this sidesteps the bug rather than chasing it upstream.
+  Selectors are specific enough (#site-header, .theme-toggle, .hamburger,
+  .mobile-nav, .pricing-glow) that losing Astro's automatic per-component
+  scoping isn't a real collision risk.
+*/
+
+/* Header.astro */
+#site-header {
+  background-color: color-mix(in srgb, var(--color-base) 0%, transparent);
+  backdrop-filter: blur(0.01px);
+  -webkit-backdrop-filter: blur(0.01px);
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition:
+    background-color 400ms ease,
+    backdrop-filter 400ms ease;
+}
+
+#site-header.scrolled {
+  background-color: color-mix(in srgb, var(--color-base) 40%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.hamburger {
+  width: 24px;
+  height: 16px;
+}
+
+.hamburger-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 300ms ease,
+    opacity 200ms ease,
+    top 300ms ease;
+}
+
+.hamburger .line-1 {
+  top: 0;
+}
+.hamburger .line-2 {
+  top: 7px;
+}
+.hamburger .line-3 {
+  top: 14px;
+}
+
+.hamburger.open .line-1 {
+  top: 7px;
+  transform: rotate(45deg);
+}
+.hamburger.open .line-2 {
+  opacity: 0;
+}
+.hamburger.open .line-3 {
+  top: 7px;
+  transform: rotate(-45deg);
+}
+
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: color-mix(in srgb, var(--color-base) 0%, transparent);
+  backdrop-filter: blur(0.01px);
+  -webkit-backdrop-filter: blur(0.01px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    background-color 300ms ease,
+    backdrop-filter 300ms ease,
+    opacity 300ms ease;
+}
+
+.mobile-nav.open {
+  background-color: color-mix(in srgb, var(--color-base) 92%, transparent);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.mobile-nav-link {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--color-text-primary);
+}
+
+.mobile-nav-links > * {
+  opacity: 0;
+}
+
+.mobile-nav.open .mobile-nav-links > * {
+  animation: fade-in-up 500ms ease-out both;
+  animation-delay: calc(var(--i) * 70ms + 100ms);
+}
+
+/* ThemeToggle.astro */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-text-secondary);
+  transition: color 200ms ease;
+}
+
+.theme-toggle:hover {
+  color: var(--color-text-primary);
+}
+
+.icon-sun,
+.icon-moon {
+  display: none;
+}
+
+:root[data-theme='dark'] .theme-toggle .icon-sun {
+  display: block;
+}
+
+:root[data-theme='light'] .theme-toggle .icon-moon {
+  display: block;
+}
+
+/* PricingSection.astro */
+.pricing-glow {
+  background: radial-gradient(ellipse closest-side, var(--color-accent-luminous) 0%, var(--color-base) 100%);
+  opacity: 0.3;
+}

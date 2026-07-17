@@ -24,39 +24,8 @@ const { class: className = '', style } = Astro.props;
   </svg>
 </button>
 
-<style>
-  .theme-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    color: var(--color-text-secondary);
-    transition: color 200ms ease;
-  }
-
-  .theme-toggle:hover {
-    color: var(--color-text-primary);
-  }
-
-  /* Both icons live in the DOM at all times; only the one matching the
-     current theme is shown, driven purely by the html[data-theme]
-     attribute — no per-instance JS state, so this works identically
-     whether there's one toggle on the page or several (desktop header
-     + mobile menu). */
-  .icon-sun,
-  .icon-moon {
-    display: none;
-  }
-
-  :root[data-theme='dark'] .theme-toggle .icon-sun {
-    display: block;
-  }
-
-  :root[data-theme='light'] .theme-toggle .icon-moon {
-    display: block;
-  }
-</style>
+<!-- Styles for .theme-toggle/.icon-sun/.icon-moon live in global.css, not
+     a scoped <style> block here — see the comment there for why. -->
 
 <script>
   const toggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');

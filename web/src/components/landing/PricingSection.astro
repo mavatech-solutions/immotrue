@@ -79,20 +79,5 @@ const premiumFeatures = [
   </p>
 </section>
 
-<style>
-  /*
-    Soft glow highlighting the Premium card, reusing the technique
-    proven in the hero's AuroraGlow: fades into the page's own flat
-    background color (not alpha-transparent), so the edge is never a
-    visible boundary regardless of theme, and closest-side sizing
-    means the fade completes exactly at this div's own edges — which
-    is why it's sized bigger than the card itself (-inset-10) rather
-    than exactly matching it, so it's visible as a halo bleeding out
-    around the card instead of being fully hidden behind its opaque
-    background.
-  */
-  .pricing-glow {
-    background: radial-gradient(ellipse closest-side, var(--color-accent-luminous) 0%, var(--color-base) 100%);
-    opacity: 0.3;
-  }
-</style>
+<!-- .pricing-glow styles live in global.css, not a scoped <style> block
+     here — see the comment there for why. -->

@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import Landing from '../../layouts/Landing.astro';
+
+const CATEGORY_LABELS: Record<string, string> = {
+  guide: 'Ratgeber',
+  market: 'Markt',
+  legal: 'Recht',
+  tips: 'Tipps',
+};
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const [featured, ...rest] = posts;
+// Plan calls for 9/page + pagination — with the handful of articles this
+// blog starts with, that's premature; grid just shows everything else for
+// now and real pagination can be added once there's enough content to need it.
+const gridPosts = rest.slice(0, 9);
+---
+
+<Landing title="Blog — ImmoTrue" description="Ratgeber, Markttrends und Tipps rund um den Immobilienkauf in Deutschland, Österreich und der Schweiz.">
+  <main class="mx-auto max-w-6xl px-6 pt-32 pb-24">
+    <h1 class="font-display text-3xl md:text-4xl text-text-primary">Blog</h1>
+    <p class="mt-2 font-body text-text-secondary">Ratgeber, Markttrends und Tipps rund um den Immobilienkauf.</p>
+
+    <div class="mt-6 flex flex-wrap gap-2">
+      {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
+        <a
+          href={`/blog/category/${value}`}
+          class="inline-flex items-center rounded-pill border border-border-strong px-4 py-2 font-body text-sm text-text-secondary transition-colors duration-200 hover:border-accent-luminous hover:text-text-primary"
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+
+    {posts.length === 0 ? (
+      <p class="mt-16 font-body text-text-secondary">Noch keine Artikel veröffentlicht.</p>
+    ) : (
+      <>
+        {featured && (
+          <a
+            href={`/blog/${featured.id}`}
+            class="mt-10 flex flex-col gap-4 rounded-3xl border border-border-subtle bg-surface-elevated p-8 transition-colors duration-200 hover:border-accent-luminous md:flex-row md:items-center md:gap-8"
+          >
+            <div class="flex-1">
+              <span class="font-mono text-xs tracking-wide text-accent-luminous uppercase">
+                {CATEGORY_LABELS[featured.data.category]}
+              </span>
+              <h2 class="mt-2 font-display text-2xl text-text-primary">{featured.data.title}</h2>
+              <p class="mt-2 font-body text-text-secondary">{featured.data.description}</p>
+              <p class="mt-4 font-body text-sm text-text-tertiary">
+                {featured.data.author} · {featured.data.pubDate.toLocaleDateString('de-DE')}
+              </p>
+            </div>
+          </a>
+        )}
+
+        {gridPosts.length > 0 && (
+          <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {gridPosts.map((post) => (
+              <a
+                href={`/blog/${post.id}`}
+                class="flex flex-col gap-3 rounded-3xl border border-border-subtle bg-surface-elevated p-6 transition-colors duration-200 hover:border-accent-luminous"
+              >
+                <span class="font-mono text-xs tracking-wide text-accent-luminous uppercase">
+                  {CATEGORY_LABELS[post.data.category]}
+                </span>
+                <h3 class="font-display text-lg text-text-primary">{post.data.title}</h3>
+                <p class="font-body text-sm text-text-secondary">{post.data.description}</p>
+                <p class="mt-auto font-body text-xs text-text-tertiary">
+                  {post.data.author} · {post.data.pubDate.toLocaleDateString('de-DE')}
+                </p>
+              </a>
+            ))}
+          </div>
+        )}
+      </>
+    )}
+  </main>
+</Landing>

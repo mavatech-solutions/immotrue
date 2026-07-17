@@ -3,7 +3,9 @@ import type { PurchaseCosts } from '../types/index.ts'
 // Grunderwerbsteuer per Bundesland, verified live (finanz-tools.de +
 // rechenbar.de cross-checked, incl. the 2024 Thüringen cut and the 2025-07
 // Bremen increase). Austria uses a flat federal rate instead of per-state.
-const GRUNDERWERBSTEUER_DE: Record<string, number> = {
+// Exported so other real-data-only consumers (e.g. generate-blog-draft)
+// can cite the same verified table instead of duplicating it.
+export const GRUNDERWERBSTEUER_DE: Record<string, number> = {
   Bayern: 3.5,
   'Baden-Württemberg': 5.0,
   Niedersachsen: 5.0,

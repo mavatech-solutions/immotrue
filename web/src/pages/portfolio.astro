@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import AppHeader from '../components/layout/AppHeader.astro';
+import PortfolioScreen from '../components/portfolio/PortfolioScreen';
+---
+
+<Base title="Meine Analysen — ImmoTrue">
+  <AppHeader />
+  <main class="mx-auto max-w-6xl px-6 py-16">
+    <PortfolioScreen client:load />
+  </main>
+</Base>

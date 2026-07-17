@@ -20,9 +20,27 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS })
 
   try {
-    const { url, user_id } = await req.json()
+    const { url, user_id, analysis_id } = await req.json()
     if (typeof url !== 'string' || typeof user_id !== 'string' || !url || !user_id) {
       return jsonResponse({ error: 'invalid_input', message: 'url and user_id are required.' }, 400)
+    }
+
+    // Refreshing an existing portfolio analysis (Schritt 24 "Aktualisieren")
+    // re-runs the exact same paid pipeline (Apify + Claude) as a brand new
+    // analysis, so it counts against the same rate limit rather than being
+    // a free/unlimited action.
+    let existingOriginalPrice: number | null = null
+    if (analysis_id) {
+      const { data: existing, error: existingError } = await supabase
+        .from('analyses')
+        .select('original_price, user_id')
+        .eq('id', analysis_id)
+        .single()
+
+      if (existingError || !existing || existing.user_id !== user_id) {
+        return jsonResponse({ error: 'not_found', message: 'Analyse nicht gefunden.' }, 404)
+      }
+      existingOriginalPrice = existing.original_price
     }
 
     const rateLimitError = await checkAndUpdateRateLimit(user_id)
@@ -77,53 +95,61 @@ Deno.serve(async (req) => {
     })
     if ('error' in ai) return jsonResponse(ai.body, ai.status)
 
-    const { data: saved, error: insertError } = await supabase
-      .from('analyses')
-      .insert({
-        user_id,
-        original_url: url,
-        portal: property.data.portal,
-        price: property.data.price,
-        price_per_sqm: property.data.pricePerSqm,
-        size_sqm: property.data.size,
-        rooms: property.data.rooms,
-        address: property.data.address,
-        district: property.data.district,
-        city: property.data.city,
-        state: property.data.state,
-        zip_code: property.data.zipCode,
-        year_built: property.data.yearBuilt,
-        energy_class: property.data.energyClass,
-        floor: property.data.floor,
-        days_on_market: property.data.daysOnMarket,
-        is_private_seller: property.data.isPrivateSeller,
-        original_price: property.data.price,
-        current_price: property.data.price,
-        price_verdict: priceVerdict,
-        price_deviation: priceDeviation,
-        suggested_offer_price: (ai.data as { suggestedOfferPrice?: number }).suggestedOfferPrice,
-        ai_summary: (ai.data as { summary?: string }).summary,
-        ai_full_report: (ai.data as { fullReport?: string }).fullReport,
-        ai_recommendation: (ai.data as { recommendation?: string }).recommendation,
-        ai_negotiation_tip: (ai.data as { negotiationTip?: string }).negotiationTip,
-        ai_risks: (ai.data as { risks?: unknown }).risks,
-        risk_breakdown: (ai.data as { riskBreakdown?: unknown }).riskBreakdown,
-        ai_pros: (ai.data as { pros?: unknown }).pros,
-        ai_cons: (ai.data as { cons?: unknown }).cons,
-        ai_forecast_10y: (ai.data as { forecast10y?: string }).forecast10y,
-        ai_forecast_value_10y: (ai.data as { forecastValue10y?: number }).forecastValue10y,
-        gross_yield: grossYield,
-        location_score: location.data.score,
-        location_details: location.data,
-        purchase_costs_total: costs.total,
-        purchase_costs_breakdown: costs,
-        estimated_rent: estimatedRent,
-        last_price_check: new Date().toISOString(),
-      })
-      .select()
-      .single()
+    const row = {
+      user_id,
+      original_url: url,
+      portal: property.data.portal,
+      price: property.data.price,
+      price_per_sqm: property.data.pricePerSqm,
+      size_sqm: property.data.size,
+      rooms: property.data.rooms,
+      address: property.data.address,
+      district: property.data.district,
+      city: property.data.city,
+      state: property.data.state,
+      zip_code: property.data.zipCode,
+      year_built: property.data.yearBuilt,
+      energy_class: property.data.energyClass,
+      floor: property.data.floor,
+      days_on_market: property.data.daysOnMarket,
+      is_private_seller: property.data.isPrivateSeller,
+      // On refresh, keep the price the property was *originally* analyzed
+      // at so the portfolio's price-change-since-first-analysis stays
+      // accurate; only a brand new analysis sets original_price = current.
+      original_price: existingOriginalPrice ?? property.data.price,
+      current_price: property.data.price,
+      price_verdict: priceVerdict,
+      price_deviation: priceDeviation,
+      suggested_offer_price: (ai.data as { suggestedOfferPrice?: number }).suggestedOfferPrice,
+      ai_summary: (ai.data as { summary?: string }).summary,
+      ai_full_report: (ai.data as { fullReport?: string }).fullReport,
+      ai_recommendation: (ai.data as { recommendation?: string }).recommendation,
+      ai_negotiation_tip: (ai.data as { negotiationTip?: string }).negotiationTip,
+      ai_risks: (ai.data as { risks?: unknown }).risks,
+      risk_breakdown: (ai.data as { riskBreakdown?: unknown }).riskBreakdown,
+      ai_pros: (ai.data as { pros?: unknown }).pros,
+      ai_cons: (ai.data as { cons?: unknown }).cons,
+      ai_forecast_10y: (ai.data as { forecast10y?: string }).forecast10y,
+      ai_forecast_value_10y: (ai.data as { forecastValue10y?: number }).forecastValue10y,
+      gross_yield: grossYield,
+      location_score: location.data.score,
+      location_details: location.data,
+      purchase_costs_total: costs.total,
+      purchase_costs_breakdown: costs,
+      estimated_rent: estimatedRent,
+      last_price_check: new Date().toISOString(),
+    }
 
-    if (insertError) throw insertError
+    const { data: saved, error: saveError } = analysis_id
+      ? await supabase
+          .from('analyses')
+          .update({ ...row, last_updated_at: new Date().toISOString() })
+          .eq('id', analysis_id)
+          .select()
+          .single()
+      : await supabase.from('analyses').insert(row).select().single()
+
+    if (saveError) throw saveError
 
     return jsonResponse(saved, 200)
   } catch (error) {

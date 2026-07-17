@@ -1,0 +1,24 @@
+---
+import Base from './Base.astro';
+import AppSidebar from '../components/layout/AppSidebar.astro';
+import AppTopBar from '../components/layout/AppTopBar';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<Base title={title} description={description}>
+  <div class="flex min-h-screen">
+    <AppSidebar />
+    <div class="flex min-w-0 flex-1 flex-col">
+      <AppTopBar client:load />
+      <main class="flex-1 px-8 py-8">
+        <slot />
+      </main>
+    </div>
+  </div>
+</Base>

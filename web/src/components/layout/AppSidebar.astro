@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../../assets/logo_immotrue.png';
+
+const NAV_ITEMS = [
+  { href: '/dashboard', icon: '📊', label: 'Dashboard' },
+  { href: '/analyse', icon: '➕', label: 'Neue Analyse' },
+  { href: '/portfolio', icon: '📁', label: 'Portfolio' },
+  { href: '/alerts', icon: '🔔', label: 'Wunschalarm' },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<aside class="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-border-subtle bg-surface">
+  <a href="/dashboard" class="flex items-center gap-2 px-6 py-5 font-display text-lg text-text-primary">
+    <Image src={logo} alt="ImmoTrue" width={96} height={96} class="h-8 w-8" />
+    ImmoTrue
+  </a>
+
+  <nav class="flex flex-col gap-1 px-3">
+    {NAV_ITEMS.map((item) => {
+      const isActive = currentPath === item.href;
+      return (
+        <a
+          href={item.href}
+          class={`flex items-center gap-3 rounded-xl px-3 py-2.5 font-body text-sm transition-colors duration-200 ${
+            isActive
+              ? 'bg-accent/15 text-accent-luminous'
+              : 'text-text-secondary hover:bg-surface-elevated hover:text-text-primary'
+          }`}
+        >
+          <span class="text-base">{item.icon}</span>
+          {item.label}
+        </a>
+      );
+    })}
+  </nav>
+</aside>

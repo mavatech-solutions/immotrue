@@ -1,15 +1,13 @@
 ---
-import Base from '../../layouts/Base.astro';
-import AppHeader from '../../components/layout/AppHeader.astro';
+import AppShell from '../../layouts/AppShell.astro';
 ---
 
 <!-- Stripe redirects here right after checkout, but the webhook that
      actually flips is_premium can arrive a moment later — this page
      doesn't try to read is_premium itself, it just confirms the payment
      was accepted and points to the dashboard. -->
-<Base title="Willkommen bei Premium — ImmoTrue">
-  <AppHeader />
-  <main class="mx-auto flex max-w-2xl flex-col items-center gap-4 px-6 py-24 text-center">
+<AppShell title="Willkommen bei Premium — ImmoTrue">
+  <div class="mx-auto flex max-w-2xl flex-col items-center gap-4 py-24 text-center">
     <span class="text-5xl">🎉</span>
     <h1 class="font-display text-2xl text-text-primary">Zahlung erfolgreich!</h1>
     <p class="font-body text-text-secondary">
@@ -21,5 +19,5 @@ import AppHeader from '../../components/layout/AppHeader.astro';
     >
       Zum Dashboard
     </a>
-  </main>
-</Base>
+  </div>
+</AppShell>

@@ -1,12 +1,8 @@
 ---
-import Base from '../layouts/Base.astro';
-import AppHeader from '../components/layout/AppHeader.astro';
+import AppShell from '../layouts/AppShell.astro';
 import AlertsScreen from '../components/alerts/AlertsScreen';
 ---
 
-<Base title="Meine Alarme — ImmoTrue">
-  <AppHeader />
-  <main class="mx-auto max-w-6xl px-6 py-16">
-    <AlertsScreen client:load />
-  </main>
-</Base>
+<AppShell title="Meine Alarme — ImmoTrue">
+  <AlertsScreen client:load />
+</AppShell>

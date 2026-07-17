@@ -1,12 +1,8 @@
 ---
-import Base from '../layouts/Base.astro';
-import AppHeader from '../components/layout/AppHeader.astro';
+import AppShell from '../layouts/AppShell.astro';
 import DashboardScreen from '../components/dashboard/DashboardScreen';
 ---
 
-<Base title="Dashboard — ImmoTrue">
-  <AppHeader />
-  <main class="mx-auto max-w-6xl px-6 py-16">
-    <DashboardScreen client:load />
-  </main>
-</Base>
+<AppShell title="Dashboard — ImmoTrue">
+  <DashboardScreen client:load />
+</AppShell>

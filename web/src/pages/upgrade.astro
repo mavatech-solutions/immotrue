@@ -1,12 +1,8 @@
 ---
-import Base from '../layouts/Base.astro';
-import AppHeader from '../components/layout/AppHeader.astro';
+import AppShell from '../layouts/AppShell.astro';
 import UpgradeScreen from '../components/upgrade/UpgradeScreen';
 ---
 
-<Base title="Premium — ImmoTrue">
-  <AppHeader />
-  <main class="mx-auto max-w-4xl px-6 py-16">
-    <UpgradeScreen client:load />
-  </main>
-</Base>
+<AppShell title="Premium — ImmoTrue">
+  <UpgradeScreen client:load />
+</AppShell>

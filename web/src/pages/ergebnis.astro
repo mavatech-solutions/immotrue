@@ -1,6 +1,5 @@
 ---
-import Base from '../layouts/Base.astro';
-import AppHeader from '../components/layout/AppHeader.astro';
+import AppShell from '../layouts/AppShell.astro';
 import ResultScreen from '../components/analysis/ResultScreen';
 ---
 
@@ -10,9 +9,6 @@ import ResultScreen from '../components/analysis/ResultScreen';
      without one. RLS on `analyses` (auth.uid() = user_id) makes a
      direct client-side Supabase select safe, so no backend proxy is
      needed either. -->
-<Base title="Analyse-Ergebnis — ImmoTrue">
-  <AppHeader />
-  <main class="mx-auto max-w-6xl px-6 py-16">
-    <ResultScreen client:load />
-  </main>
-</Base>
+<AppShell title="Analyse-Ergebnis — ImmoTrue">
+  <ResultScreen client:load />
+</AppShell>

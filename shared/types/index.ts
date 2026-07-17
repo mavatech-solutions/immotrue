@@ -144,6 +144,7 @@ export interface SavedAnalysis {
   current_price: number | null
   price_change_percent: number | null
   last_price_check: string | null
+  price_alert_enabled: boolean
 
   price_verdict: PriceVerdict | null
   price_deviation: number | null

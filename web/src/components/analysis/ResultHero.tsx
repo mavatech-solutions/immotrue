@@ -3,6 +3,7 @@ import { motion, animate } from 'framer-motion';
 import { getPortalById } from '../../../../shared/utils/portalDetector';
 import type { SavedAnalysis } from '../../../../shared/types/index';
 import { generateAnalysisPdf } from '../../lib/generatePdf';
+import { supabase } from '../../lib/supabase';
 
 const VERDICT_LABEL: Record<string, string> = {
   cheap: 'GÜNSTIG',
@@ -65,6 +66,19 @@ function LocationRing({ score }: { score: number | null }) {
 }
 
 export default function ResultHero({ analysis, isPremium }: { analysis: SavedAnalysis; isPremium: boolean }) {
+  const [status, setStatus] = useState(analysis.status);
+  const isFavorite = status === 'favorite';
+
+  async function toggleFavorite() {
+    if (!isPremium) {
+      window.location.href = '/#preise';
+      return;
+    }
+    const next = isFavorite ? 'interesting' : 'favorite';
+    setStatus(next);
+    await supabase.from('analyses').update({ status: next }).eq('id', analysis.id);
+  }
+
   const portal = analysis.portal ? getPortalById(analysis.portal) : undefined;
 
   const metaParts = [
@@ -90,7 +104,29 @@ export default function ResultHero({ analysis, isPremium }: { analysis: SavedAna
           {metaParts.length > 0 && <p className="mt-1 font-body text-sm text-text-secondary">{metaParts.join(' · ')}</p>}
         </div>
 
-        <div className="flex shrink-0 gap-3">
+        <div className="flex shrink-0 flex-wrap gap-3">
+          <button
+            type="button"
+            title={isPremium ? undefined : 'Portfolio ist ein Premium-Feature'}
+            onClick={toggleFavorite}
+            className={`inline-flex items-center justify-center gap-1.5 rounded-pill border px-5 py-2.5 font-body text-sm transition-colors duration-200 ${
+              isFavorite
+                ? 'border-verdict-expensive bg-verdict-expensive/15 text-verdict-expensive'
+                : 'border-border-strong text-text-primary hover:border-accent-luminous'
+            }`}
+          >
+            {isFavorite ? '⭐ Favorit' : '☆ Als Favorit speichern'}
+          </button>
+
+          <a
+            href={analysis.original_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-1.5 rounded-pill border border-border-strong px-5 py-2.5 font-body text-sm text-text-primary transition-colors duration-200 hover:border-accent-luminous"
+          >
+            🔗 Original-Inserat öffnen
+          </a>
+
           <a
             href="/analyse"
             className="inline-flex items-center justify-center rounded-pill border border-border-strong px-5 py-2.5 font-body text-sm text-text-primary transition-colors duration-200 hover:border-accent-luminous"

@@ -1,17 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
 import { Image } from 'astro:assets';
-import LoginForm from '../components/auth/LoginForm';
+import RegisterForm from '../components/auth/RegisterForm';
 import logo from '../assets/logo_immotrue.png';
 ---
 
-<Base title="Anmelden — ImmoTrue">
+<Base title="Registrieren — ImmoTrue">
   <main class="flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-16">
     <a href="/" class="flex items-center gap-2 font-display text-lg text-text-primary">
       <Image src={logo} alt="ImmoTrue" width={96} height={96} class="h-9 w-9" />
       ImmoTrue
     </a>
-    <h1 class="font-display text-2xl text-text-primary">Willkommen zurück</h1>
-    <LoginForm client:load />
+    <h1 class="font-display text-2xl text-text-primary">Kostenlos starten</h1>
+    <RegisterForm client:load />
   </main>
 </Base>

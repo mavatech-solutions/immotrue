@@ -39,7 +39,7 @@ function DashboardScreenInner() {
           ) : (
             <>
               Du nutzt ImmoTrue Free.{' '}
-              <a href="/#preise" className="text-accent-luminous transition-colors duration-200 hover:text-text-primary">
+              <a href="/upgrade" className="text-accent-luminous transition-colors duration-200 hover:text-text-primary">
                 Jetzt upgraden
               </a>
             </>

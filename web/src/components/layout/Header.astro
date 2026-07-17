@@ -32,7 +32,7 @@ const mobileLinks = [
     <div class="flex items-center gap-5">
       <a href="/login" class="hidden sm:inline font-body text-sm text-text-secondary hover:text-text-primary transition-colors duration-200">Anmelden</a>
       <div class="hidden md:block"><ThemeToggle /></div>
-      <div class="hidden md:block"><Button variant="primary" href="/login" class="px-5! py-2.5! text-sm">Kostenlos starten</Button></div>
+      <div class="hidden md:block"><Button variant="primary" href="/register" class="px-5! py-2.5! text-sm">Kostenlos starten</Button></div>
 
       <div class="md:hidden"><ThemeToggle /></div>
 
@@ -57,7 +57,7 @@ const mobileLinks = [
     {mobileLinks.map((link, i) => (
       <a href={link.href} class="mobile-nav-link" style={`--i:${i};`}>{link.label}</a>
     ))}
-    <Button variant="primary" href="/login" class="mt-4" style={`--i:${mobileLinks.length};`}>
+    <Button variant="primary" href="/register" class="mt-4" style={`--i:${mobileLinks.length};`}>
       Kostenlos starten
     </Button>
   </nav>

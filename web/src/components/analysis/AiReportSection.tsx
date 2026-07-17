@@ -80,7 +80,7 @@ export default function AiReportSection({ analysis, isPremium }: { analysis: Sav
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-surface/60 p-6 text-center">
             <p className="font-body text-sm text-text-secondary">Lage, Risiken, Verhandlungsempfehlung & 10-Jahres-Prognose</p>
             <a
-              href="/#preise"
+              href="/upgrade"
               className="inline-flex items-center justify-center rounded-pill bg-linear-to-r from-accent to-accent-luminous px-5 py-2.5 font-body text-sm font-medium text-on-accent"
             >
               Premium für Vollbericht

@@ -1,0 +1,78 @@
+---
+import Landing from '../layouts/Landing.astro';
+---
+
+<Landing title="Datenschutz — ImmoTrue" description="Datenschutzerklärung von ImmoTrue.">
+  <main class="mx-auto max-w-2xl px-6 pt-32 pb-24">
+    <div class="mb-8 rounded-2xl border border-verdict-overpriced/40 bg-verdict-overpriced/10 p-4 font-body text-sm text-verdict-overpriced">
+      ⚠️ Die Auflistung der Auftragsverarbeiter unten spiegelt den echten technischen Stand wider, aber der Text insgesamt
+      ist kein rechtsgültiges Dokument — vor Live-Schaltung von einem:einer Anwält:in oder Datenschutzbeauftragten prüfen
+      lassen (u.a. Rechtsgrundlagen, Auftragsverarbeitungsverträge, Löschfristen).
+    </div>
+
+    <h1 class="font-display text-3xl text-text-primary">Datenschutzerklärung</h1>
+
+    <div class="mt-8 flex flex-col gap-6 font-body text-text-secondary">
+      <section>
+        <h2 class="font-display text-lg text-text-primary">1. Verantwortlicher</h2>
+        <p class="mt-2">
+          [Name / Firma]<br />
+          [Adresse]<br />
+          E-Mail: [E-Mail-Adresse]
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display text-lg text-text-primary">2. Welche Daten wir verarbeiten</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          <li>Konto: E-Mail-Adresse, gehashtes Passwort, Nutzer-Typ (Käufer/Investor/Beides)</li>
+          <li>Analysen: von dir eingereichte Inserats-URLs sowie die daraus erzeugten Analyseergebnisse</li>
+          <li>Portfolio &amp; Alarme: gespeicherte Analysen, Notizen, Wunschalarm-Kriterien</li>
+          <li>Zahlungsdaten: werden direkt von Stripe verarbeitet, wir selbst speichern keine Kartendaten</li>
+          <li>Nutzungsdaten: technische Logs zur Fehlerbehebung (z. B. fehlgeschlagene Analysen)</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="font-display text-lg text-text-primary">3. Eingesetzte Dienstleister (Auftragsverarbeiter)</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5">
+          <li><strong class="text-text-primary">Supabase</strong> — Datenbank, Authentifizierung, Backend-Funktionen</li>
+          <li><strong class="text-text-primary">Anthropic (Claude API)</strong> — KI-Analyse der eingereichten Immobiliendaten</li>
+          <li><strong class="text-text-primary">Apify</strong> — Abruf öffentlicher Immobilien-Inseratsdaten von Drittportalen</li>
+          <li><strong class="text-text-primary">Stripe</strong> — Zahlungsabwicklung für Premium-Abos</li>
+          <li><strong class="text-text-primary">OpenStreetMap (Nominatim) / Overpass API</strong> — Geokodierung und Lage-Daten (Schulen, ÖPNV etc.)</li>
+        </ul>
+        <p class="mt-2">[Auftragsverarbeitungsverträge (Art. 28 DSGVO) mit jedem Dienstleister ergänzen.]</p>
+      </section>
+
+      <section>
+        <h2 class="font-display text-lg text-text-primary">4. Rechtsgrundlage</h2>
+        <p class="mt-2">
+          [Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) für Konto- und Analysefunktionen, lit. f (berechtigtes Interesse)
+          für technische Logs — im Detail zu prüfen.]
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display text-lg text-text-primary">5. Speicherdauer</h2>
+        <p class="mt-2">[Löschfristen je Datenkategorie festlegen, insb. nach Konto-Löschung.]</p>
+      </section>
+
+      <section>
+        <h2 class="font-display text-lg text-text-primary">6. Cookies &amp; lokaler Speicher</h2>
+        <p class="mt-2">
+          Wir verwenden ausschließlich technisch notwendigen Local Storage (keine Tracking-Cookies): Anmelde-Sitzung
+          (Supabase Auth) und deine Theme-Einstellung (hell/dunkel).
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-display text-lg text-text-primary">7. Deine Rechte</h2>
+        <p class="mt-2">
+          Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und
+          Widerspruch gemäß Art. 15–21 DSGVO sowie ein Beschwerderecht bei einer Aufsichtsbehörde.
+        </p>
+      </section>
+    </div>
+  </main>
+</Landing>

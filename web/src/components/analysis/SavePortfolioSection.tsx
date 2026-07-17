@@ -61,7 +61,7 @@ export default function SavePortfolioSection({ analysis, isPremium }: { analysis
                   Speichere Analysen, kategorisiere sie und erhalte Preisalarme — mit Premium.
                 </p>
                 <a
-                  href="/#preise"
+                  href="/upgrade"
                   className="inline-flex items-center justify-center rounded-pill bg-linear-to-r from-accent to-accent-luminous px-5 py-2.5 font-body text-sm font-medium text-on-accent"
                 >
                   Premium starten

@@ -200,7 +200,7 @@ export default function FinancingCalculator({ analysis, isPremium }: { analysis:
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-surface/70 p-6 text-center">
           <p className="font-body text-sm text-text-secondary">Finanzierungsrechner mit Kaufen-vs-Mieten-Vergleich</p>
           <a
-            href="/#preise"
+            href="/upgrade"
             className="inline-flex items-center justify-center rounded-pill bg-linear-to-r from-accent to-accent-luminous px-5 py-2.5 font-body text-sm font-medium text-on-accent"
           >
             Premium freischalten

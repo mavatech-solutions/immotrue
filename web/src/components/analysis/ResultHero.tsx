@@ -71,7 +71,7 @@ export default function ResultHero({ analysis, isPremium }: { analysis: SavedAna
 
   async function toggleFavorite() {
     if (!isPremium) {
-      window.location.href = '/#preise';
+      window.location.href = '/upgrade';
       return;
     }
     const next = isFavorite ? 'interesting' : 'favorite';

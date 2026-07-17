@@ -116,7 +116,15 @@ export default function RegisterForm() {
           onChange={(e) => setAgbAccepted(e.target.checked)}
           className="mt-0.5 accent-accent-luminous"
         />
-        Ich akzeptiere die AGB und Datenschutzerklärung.
+        Ich akzeptiere die{' '}
+        <a href="/agb" target="_blank" className="text-accent-luminous transition-colors duration-200 hover:text-text-primary">
+          AGB
+        </a>{' '}
+        und{' '}
+        <a href="/datenschutz" target="_blank" className="text-accent-luminous transition-colors duration-200 hover:text-text-primary">
+          Datenschutzerklärung
+        </a>
+        .
       </label>
 
       {error && <p className="font-body text-sm text-verdict-overpriced">{error}</p>}

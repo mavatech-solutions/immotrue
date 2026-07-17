@@ -15,7 +15,8 @@ export default defineConfig({
       // Authenticated app screens (redirect to /login for crawlers anyway)
       // add nothing to search results — only the public marketing/content
       // pages belong in the sitemap.
-      filter: (page) => !/\/(alerts|analyse|ergebnis|portfolio|login)\/?$/.test(page),
+      filter: (page) =>
+        !/\/(alerts|analyse|ergebnis|portfolio|login|dashboard|upgrade|forgot-password|reset-password)(\/.*)?\/?$/.test(page),
     }),
   ],
   vite: {

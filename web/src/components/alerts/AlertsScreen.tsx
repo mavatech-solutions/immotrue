@@ -41,7 +41,7 @@ function LockedState() {
         Sei der Erste bei neuen Objekten — lass dich benachrichtigen, sobald ein passendes Inserat online geht.
       </p>
       <a
-        href="/#preise"
+        href="/upgrade"
         className="mt-2 inline-flex items-center justify-center rounded-pill bg-linear-to-r from-accent to-accent-luminous px-6 py-3 font-body text-sm font-medium text-on-accent transition-opacity duration-200 hover:opacity-90"
       >
         Premium starten

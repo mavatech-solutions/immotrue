@@ -16,14 +16,15 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS })
 
   try {
-    const { city, zipCode, state } = await req.json()
+    const { city, zipCode, state, country } = await req.json()
 
     if (typeof city !== 'string' || city.length === 0) {
       return jsonResponse({ error: 'invalid_input', message: 'city is required.' }, 400)
     }
 
-    const marketPrice = await findMarketPrice(city, zipCode ?? null, state ?? null)
-    const trend = await findLatestTrend()
+    const resolvedCountry = country === 'AT' || country === 'CH' ? country : 'DE'
+    const marketPrice = await findMarketPrice(city, zipCode ?? null, state ?? null, resolvedCountry)
+    const trend = await findLatestTrend(resolvedCountry)
 
     const priceGrowthLastYear = trend?.price_growth_last_year ?? null
     const priceGrowth5Years = trend?.price_growth_5_years ?? null
@@ -51,10 +52,15 @@ interface MarketPriceRow {
 // Falls back city -> Bundesland-blind city match -> national baseline, so
 // there is always *some* comparison value, even for towns with zero
 // ImmoTrue analyses yet (the 'Deutschland' row seeded in Schritt 8).
+// That national baseline only exists for Germany — market_prices has no
+// Austrian/Swiss equivalent seeded yet, so AT/CH properties stop at the
+// city-match tier and return null (honest "no data") rather than silently
+// showing a German EUR/m² price as if it were a local comparison.
 async function findMarketPrice(
   city: string,
   zipCode: string | null,
   _state: string | null,
+  country: 'DE' | 'AT' | 'CH',
 ): Promise<MarketPriceRow | null> {
   if (zipCode) {
     const zipPrefix = zipCode.slice(0, 3)
@@ -78,6 +84,8 @@ async function findMarketPrice(
     .maybeSingle()
   if (byCity) return byCity
 
+  if (country !== 'DE') return null
+
   const { data: national } = await supabase
     .from('market_prices')
     .select('avg_price_per_sqm, rental_avg_per_sqm')
@@ -92,13 +100,28 @@ interface TrendRow {
   price_growth_5_years: number | null
 }
 
-async function findLatestTrend(): Promise<TrendRow | null> {
+async function findLatestTrend(country: 'DE' | 'AT' | 'CH'): Promise<TrendRow | null> {
   const { data } = await supabase
     .from('national_market_trends')
     .select('price_growth_last_year, price_growth_5_years')
+    .eq('country', country)
     .order('updated_at', { ascending: false })
     .limit(1)
     .maybeSingle()
+
+  // Austria has no trend sync yet (only DE and CH are wired up) — degrade
+  // to the German rate rather than returning no trend at all, same
+  // reasoning fetch-market already applies elsewhere for missing data.
+  if (!data && country === 'AT') {
+    const { data: fallback } = await supabase
+      .from('national_market_trends')
+      .select('price_growth_last_year, price_growth_5_years')
+      .eq('country', 'DE')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    return fallback
+  }
 
   return data
 }

@@ -1,6 +1,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import type { LocationData, MarketData, PriceVerdict, PropertyData } from '../../../../shared/types/index.ts'
 import { calculatePurchaseCosts } from '../../../../shared/utils/calculatePurchaseCosts.ts'
+import { getPortalById } from '../../../../shared/utils/portalDetector.ts'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -54,12 +55,17 @@ Deno.serve(async (req) => {
     // *something*, at the cost of location-score precision for those cases.
     const addressQuery = property.data.address ?? property.data.district ?? property.data.city
 
+    // Derived from the portal's own country list rather than a hardcoded
+    // per-portal check, so newly added AT/CH portals are covered for free.
+    const country = (getPortalById(property.data.portal)?.countries[0] as 'DE' | 'AT' | 'CH' | undefined) ?? 'DE'
+
     const [location, market] = await Promise.all([
       callFunction<LocationData>('analyze-location', { address: addressQuery, city: property.data.city }),
       callFunction<MarketData>('fetch-market', {
         city: property.data.city,
         zipCode: property.data.zipCode,
         state: property.data.state,
+        country,
       }),
     ])
     if ('error' in location) return jsonResponse(location.body, location.status)
@@ -69,7 +75,6 @@ Deno.serve(async (req) => {
       property.data.pricePerSqm,
       market.data.avgPricePerSqm,
     )
-    const country = property.data.portal === 'willhaben' ? 'AT' : 'DE'
     const costs = calculatePurchaseCosts(
       property.data.price,
       property.data.state,

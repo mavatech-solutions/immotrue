@@ -28,6 +28,7 @@ Deno.serve(async () => {
     )
 
     const { error } = await supabase.from('national_market_trends').insert({
+      country: 'DE',
       house_price_index: latest.value,
       reference_quarter: `${latest.year}-Q${latest.quarter}`,
       price_growth_last_year: priceGrowthLastYear,

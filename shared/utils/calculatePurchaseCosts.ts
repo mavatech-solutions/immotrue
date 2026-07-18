@@ -29,7 +29,7 @@ const DE_FALLBACK_RATE = 5.7 // used only if the state string doesn't match the 
 export function calculatePurchaseCosts(
   price: number,
   state: string | null,
-  country: 'DE' | 'AT',
+  country: 'DE' | 'AT' | 'CH',
   isPrivateSeller: boolean | null,
 ): PurchaseCosts {
   if (country === 'AT') {
@@ -39,6 +39,31 @@ export function calculatePurchaseCosts(
     const notary = Math.round(price * 0.02)
     const registration = Math.round(price * 0.011)
     const agentFee = isPrivateSeller === false ? Math.round(price * 0.036) : 0
+    return buildResult(price, transferTax, notary, registration, agentFee)
+  }
+
+  if (country === 'CH') {
+    // Switzerland's Handänderungssteuer (transfer tax) is set per canton,
+    // not federally — real published rates range from 0% (several cantons
+    // including Zürich, Zug, Aargau, Schaffhausen, Uri, Glarus, Tessin
+    // have abolished it entirely) up to 3.3% (Neuchâtel), often split
+    // between buyer and seller by local convention. We don't have a
+    // per-canton table yet (unlike Germany's Bundesland table above), so
+    // this uses ~1.5% as a representative national approximation of the
+    // buyer's share — real total acquisition costs are commonly cited as
+    // 2-5% of price. Flagged here rather than silently precise-looking;
+    // worth building a real canton table the same way GRUNDERWERBSTEUER_DE
+    // was, if Swiss precision becomes a priority.
+    const transferTax = Math.round(price * 0.015)
+    // Notary + Grundbuch (land registry) fees: ~0.1-0.5% depending on
+    // canton (Zürich ~0.1%, Bern ~0.3-0.5%) — 0.3% used as a midpoint.
+    const notary = Math.round(price * 0.003)
+    const registration = 0 // folded into the notary estimate above, no separate verified rate
+    // Agent commission in Switzerland is conventionally seller-paid, not
+    // split with the buyer the way Germany's post-2020 Bestellerprinzip
+    // works — no verified buyer-side rate to apply, so this stays 0
+    // regardless of isPrivateSeller rather than guessing a split.
+    const agentFee = 0
     return buildResult(price, transferTax, notary, registration, agentFee)
   }
 

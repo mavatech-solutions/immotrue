@@ -1,12 +1,17 @@
 import type { Portal } from '../types/index.ts'
 
-// Real domains of the 6 supported DACH portals. Used in Mobile + Web + Admin.
+// Real domains of the 7 supported DACH portals. Used in Mobile + Web + Admin.
 // Immonet.de is deliberately absent: AVIV Group discontinued it as a
 // separate brand in early 2026 and merged it fully into Immowelt (same
 // backend, same bot protection, immonet.de links now redirect there).
 // Wohnungsboerse.net is deliberately absent too: it now 301-redirects to
 // immobilienscout24.de (confirmed 2026-07-16) — absorbed the same way,
-// no longer an independent brand.
+// no longer an independent brand. Other real Swiss portals
+// (immostreet.ch, flatfox.ch, newhome.ch, comparis.ch) are deliberately
+// absent too — immostreet.ch's listings are just referral links back to
+// homegate.ch (no independent inventory), flatfox.ch/newhome.ch have no
+// cost-effective scraping path found yet, comparis.ch only re-displays
+// other portals' listings.
 const PORTALS: Portal[] = [
   {
     id: 'immoscout',
@@ -53,6 +58,14 @@ const PORTALS: Portal[] = [
     id: 'homegate',
     name: 'Homegate',
     domain: 'homegate.ch',
+    flag: '🇨🇭',
+    countries: ['CH'],
+    isPrivateFriendly: false,
+  },
+  {
+    id: 'immoscout24ch',
+    name: 'ImmoScout24',
+    domain: 'immoscout24.ch',
     flag: '🇨🇭',
     countries: ['CH'],
     isPrivateFriendly: false,

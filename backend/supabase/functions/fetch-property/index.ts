@@ -5,8 +5,21 @@ import { scrapeKleinanzeigen } from './portals/kleinanzeigen.ts'
 import { scrapeOhneMakler } from './portals/ohneMakler.ts'
 import { scrapeWillhaben } from './portals/willhaben.ts'
 import { scrapeImmoscout24ViaApify, scrapeImmoweltViaApify } from './portals/apify.ts'
+import { scrapeImmoscout24ChViaApify } from './portals/immoscout24ch.ts'
+// homegate.ts (ducto/homegate-property-scraper) is written and verified
+// field-by-field against the actor's docs, but the Apify API call itself
+// returns HTTP 403 — the actor needs a one-time manual activation on
+// apify.com (visit the actor page, click "Try for free") before
+// programmatic calls work. Not wired into SCRAPERS below until that's
+// done, so a pasted homegate.ch URL correctly falls through to
+// "unsupported_portal" instead of a broken request.
 
-const TIMEOUT_MS = 15_000
+// The Swiss Apify actors (memo23 .ch, ducto homegate) recommend residential
+// proxies for reliability, which run noticeably slower than the simple
+// free scrapers or the existing German Apify actors this timeout was
+// originally tuned for — 15s wasn't enough headroom, confirmed by a real
+// timeout on a live test call.
+const TIMEOUT_MS = 75_000
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -21,6 +34,7 @@ const SCRAPERS: Record<string, Scraper> = {
   willhaben: scrapeWillhaben,
   immoscout: scrapeImmoscout24ViaApify,
   immowelt: scrapeImmoweltViaApify,
+  immoscout24ch: scrapeImmoscout24ChViaApify,
 }
 
 Deno.serve(async (req) => {

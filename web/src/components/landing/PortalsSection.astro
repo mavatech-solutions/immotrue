@@ -8,11 +8,6 @@ import ohnemaklerLogo from '../../assets/portals/ohnemakler.svg';
 import willhabenLogo from '../../assets/portals/willhaben.svg';
 import homegateLogo from '../../assets/portals/homegate.svg';
 
-// Reuses the same portal list the backend scrapers and the hero's
-// live URL detection use — one source of truth, so this strip can't
-// drift out of sync with what's actually supported.
-const portals = getAllPortals();
-
 const logos: Record<string, ImageMetadata> = {
   immoscout: immoscoutLogo,
   immowelt: immoweltLogo,
@@ -21,6 +16,15 @@ const logos: Record<string, ImageMetadata> = {
   willhaben: willhabenLogo,
   homegate: homegateLogo,
 }
+
+// Reuses the same portal list the backend scrapers and the hero's live
+// URL detection use — one source of truth, so this strip can't drift out
+// of sync with what's actually supported. Filtered to portals with a
+// verified logo asset on file — immoscout24.ch was added to the portal
+// list without one yet (its site is bot-protected, couldn't verify the
+// real current mark without risking a wrong/outdated logo), so it's
+// functional (URL detection, scraping) but not shown here until sourced.
+const portals = getAllPortals().filter((portal) => portal.id in logos);
 
 // Tripled (not just duplicated) so the -33.333% loop point is still
 // covered by real content on very wide viewports — with only 6 logos,

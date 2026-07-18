@@ -165,6 +165,17 @@ async function runAnalysis(input: AnalyzeRequest): Promise<AIAnalysis> {
 
       const message = await res.json()
 
+      // Real per-request cost visibility — without this, "why did this one
+      // cost 4x" is unanswerable from the Anthropic Console alone (it
+      // doesn't show retries as a distinct line, and doesn't show which
+      // property's description drove up input tokens). Cheap to log,
+      // shows up in `supabase functions logs analyze-property`.
+      if (message.usage) {
+        console.log(
+          `analyze-property usage: attempt=${attempt}/${MAX_ATTEMPTS} input_tokens=${message.usage.input_tokens} output_tokens=${message.usage.output_tokens}`,
+        )
+      }
+
       if (message.stop_reason === 'refusal') {
         throw new RefusedError('Claude hat die Analyse aus Sicherheitsgründen abgelehnt.')
       }
@@ -175,6 +186,7 @@ async function runAnalysis(input: AnalyzeRequest): Promise<AIAnalysis> {
       return toolUse.input as AIAnalysis
     } catch (error) {
       if (error instanceof RefusedError) throw error // retrying won't change a policy decision
+      console.error(`analyze-property attempt ${attempt}/${MAX_ATTEMPTS} failed:`, error)
       lastError = error
       if (attempt < MAX_ATTEMPTS) await new Promise((resolve) => setTimeout(resolve, 1000 * attempt))
     }
